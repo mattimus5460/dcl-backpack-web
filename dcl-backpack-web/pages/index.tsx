@@ -4,6 +4,8 @@ import {useEffect, useState} from "react";
 import {PreviewMessageType, sendMessage} from '@dcl/schemas'
 import {fetchAllPlayerWearables, fetchPlayerDataProfileWearables, getWearableInfo} from "./api/wearables/[...params]";
 import {Grid} from "@mui/material";
+import { Web3Button } from '../src/components/Web3Button';
+import {useWeb3Context} from "../src/context/Web3Context";
 
 
 const Home: NextPage = () => {
@@ -15,9 +17,15 @@ const Home: NextPage = () => {
     const [currentlyWearing, setCurrentlyWearing] = useState<string[]>([])
     const [currentlyWearingImages, setCurrentlyWearingImages] = useState<string[] | undefined[] | undefined>([])
     const [backpackAddress, setBackpackAddress] = useState<string | undefined>()
-    const [avatarAddress, setAvatarAddress] = useState<string | undefined>()
+   // const [avatarAddress, setAvatarAddress] = useState<string | undefined>()
+
+    const {address: avatarAddress} = useWeb3Context()
 
     useEffect(() => {
+
+        if(!currentlyWearing)
+            return
+
         const getThumbnail = async (urn: string) => {
             const info = await getWearableInfo(urn)
             return info?.thumbnail
@@ -65,7 +73,7 @@ const Home: NextPage = () => {
                 setDataSorted(wearablesByCategory)
                 setLoading(false)
             })
-    }, [currentlyWearing, backpackAddress])
+    }, [backpackAddress, avatarAddress])
 
     useEffect(() => {
         if (!avatarAddress)
@@ -82,7 +90,7 @@ const Home: NextPage = () => {
     }
 
     const getSections = (wearableData: Map<string, any>) => {
-        const allCategories = new Array()
+        const allCategories: JSX.Element[] = []
         wearableData.forEach((items, category) => {
             allCategories.push((
                 <div>
@@ -106,14 +114,14 @@ const Home: NextPage = () => {
     }
 
     const isCardSelected = (urn: string) => {
-        return currentlyWearing.includes(urn);
+        return currentlyWearing && currentlyWearing.includes(urn);
     }
 
     const getSectionItem = (item: any) => {
         return (
             <div className={`${styles.card} ${isCardSelected(item.definition.id) ? styles.selected : ''}`}>
                 <a onClick={() => sendUpdate(item.definition.id)} href="#">
-                    <img width={'100px'} height={'100px'} src={item.definition.thumbnail}/>
+                    <img width={'120px'} height={'120px'} src={item.definition.thumbnail}/>
                     {/*<h4>{item.definition.name}</h4>*/}
                     {/*<p>{item.definition.description}</p>*/}
                 </a>
@@ -124,8 +132,8 @@ const Home: NextPage = () => {
     const sendUpdate = (urn: string) => {
         const iframe = document.getElementById("previewIframe") as HTMLIFrameElement;
 
-        setPreviewUrns([...previewUrns, urn])
-        setCurrentlyWearing([...currentlyWearing, urn])
+        setPreviewUrns([urn, ...previewUrns])
+        setCurrentlyWearing([urn, ...currentlyWearing])
 
         if (iframe && iframe.contentWindow) {
             sendMessage(iframe.contentWindow, PreviewMessageType.UPDATE, {
@@ -148,6 +156,8 @@ const Home: NextPage = () => {
                 </Grid>
 
                 <Grid xs={12}>
+                    <Web3Button />
+
                     <div className={styles.description}>
                         <form onSubmit={(e) => {
                             e.preventDefault()
@@ -155,10 +165,7 @@ const Home: NextPage = () => {
                             <label className={styles.addressLabel}>
                                 Avatar Address
                             </label>
-                            <input type="text" id={'addressInput'} className={styles.addressInput} value={avatarAddress}
-                                   onChange={(event => {
-                                       setAvatarAddress(event.target.value)
-                                   })}/>
+                            {avatarAddress && <div>Connected to ${avatarAddress}</div>}
                             <br/>
                             <label className={styles.addressLabel}>
                                 Backpack Address
@@ -190,7 +197,7 @@ const Home: NextPage = () => {
 
 
             </Grid>
-            <Grid xs={12} sm={10}>
+            <Grid item xs={12} sm={10}>
                 <div className={styles.grid}>
                     {isLoading && <div>Loading</div>}
                     {!isLoading && dataSorted && getSections(dataSorted).map(section => {
