@@ -5,7 +5,7 @@ export const ThemeContextProvider: React.FC<{children:ReactNode}> = ({children})
     const theme = createTheme({
         palette: {
             primary: {
-                main: "#fcba03",
+                main: "#000000",
             }
         }
     });

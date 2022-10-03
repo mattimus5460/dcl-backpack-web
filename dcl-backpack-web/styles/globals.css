@@ -2,11 +2,9 @@ html,
 body {
   padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
-
-  color: black;
-  background: #c7c7c7;
+  font-family: system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  color: #fff;
+  background: #18141a;
 }
 
 a {
@@ -18,3 +16,12 @@ a {
   box-sizing: border-box;
 }
 
+
+.nav_item {
+  margin:1em;
+}
+
+
+.nav_item_active {
+  font-weight: bold;
+}

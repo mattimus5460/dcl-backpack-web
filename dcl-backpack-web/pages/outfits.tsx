@@ -4,11 +4,10 @@ import {useEffect, useState} from "react";
 import {PreviewMessageType, sendMessage} from '@dcl/schemas'
 import {fetchAllPlayerWearables, fetchPlayerDataProfileWearables, getWearableInfo} from "./api/wearables/[...params]";
 import {Grid} from "@mui/material";
-import { Web3Button } from '../src/components/Web3Button';
 import {useWeb3Context} from "../src/context/Web3Context";
 
 
-const Home: NextPage = () => {
+const Outfits: NextPage = () => {
 
     const [data, setData] = useState(null)
     const [dataSorted, setDataSorted] = useState<Map<string, any> | null>(null)
@@ -17,13 +16,13 @@ const Home: NextPage = () => {
     const [currentlyWearing, setCurrentlyWearing] = useState<string[]>([])
     const [currentlyWearingImages, setCurrentlyWearingImages] = useState<string[] | undefined[] | undefined>([])
     const [backpackAddress, setBackpackAddress] = useState<string | undefined>()
-   // const [avatarAddress, setAvatarAddress] = useState<string | undefined>()
+    // const [avatarAddress, setAvatarAddress] = useState<string | undefined>()
 
     const {address: avatarAddress} = useWeb3Context()
 
     useEffect(() => {
 
-        if(!currentlyWearing)
+        if (!currentlyWearing)
             return
 
         const getThumbnail = async (urn: string) => {
@@ -138,8 +137,7 @@ const Home: NextPage = () => {
         if (iframe && iframe.contentWindow) {
             sendMessage(iframe.contentWindow, PreviewMessageType.UPDATE, {
                 options: {
-                    urns: [...previewUrns, urn],
-                    wheelZoom: 5
+                    urns: [...previewUrns, urn]
                 },
             })
         }
@@ -149,23 +147,23 @@ const Home: NextPage = () => {
     return (
         <Grid container xs={12}>
 
-            <Grid item xs={12} >
+            <Grid item xs={0} sm={.25}>
 
-                <Grid className={styles.sticky} xs={12}>
-                    <iframe id="previewIframe" className={styles.previewIframe} width={'100%'} height={'800px'}
-                            src={`https://wearable-preview.decentraland.org/?profile=${avatarAddress}&background=37333d`}/>
+            </Grid>
 
-                    <div>
-                        <h2>Wearing</h2>
-                        <div className={styles.grid}>
-                            {// @ts-ignore
-                                getCurrentlyWearingSection(currentlyWearingImages)}
-                        </div>
-                    </div>
+            <Grid item xs={12} sm={3}>
 
-                </Grid>
+                <iframe id="previewIframe" className={styles.previewIframe} width={'100%'} height={'500px'}
+                        src={`https://wearable-preview.decentraland.org/?profile=${avatarAddress}`}/>
 
 
+            </Grid>
+            <Grid item xs={12} sm={8} sx={{textAlign: 'center'}}>
+                <h2>Currently Wearing</h2>
+                <div className={styles.grid}>
+                    {// @ts-ignore
+                        getCurrentlyWearingSection(currentlyWearingImages)}
+                </div>
             </Grid>
 
 
@@ -173,4 +171,4 @@ const Home: NextPage = () => {
     )
 }
 
-export default Home
+export default Outfits

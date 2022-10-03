@@ -46,6 +46,8 @@ export function web3Reducer(
 ): Web3ProviderState {
     switch (action.type) {
         case 'SET_WEB3_PROVIDER':
+
+            console.log("red add "+action.address)
             return {
                 ...state,
                 provider: action.provider,

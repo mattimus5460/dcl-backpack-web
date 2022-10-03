@@ -8,7 +8,7 @@ import { Web3Button } from '../src/components/Web3Button';
 import {useWeb3Context} from "../src/context/Web3Context";
 
 
-const Home: NextPage = () => {
+const Backpack: NextPage = () => {
 
     const [data, setData] = useState(null)
     const [dataSorted, setDataSorted] = useState<Map<string, any> | null>(null)
@@ -17,7 +17,7 @@ const Home: NextPage = () => {
     const [currentlyWearing, setCurrentlyWearing] = useState<string[]>([])
     const [currentlyWearingImages, setCurrentlyWearingImages] = useState<string[] | undefined[] | undefined>([])
     const [backpackAddress, setBackpackAddress] = useState<string | undefined>()
-   // const [avatarAddress, setAvatarAddress] = useState<string | undefined>()
+    // const [avatarAddress, setAvatarAddress] = useState<string | undefined>()
 
     const {address: avatarAddress} = useWeb3Context()
 
@@ -139,8 +139,10 @@ const Home: NextPage = () => {
             sendMessage(iframe.contentWindow, PreviewMessageType.UPDATE, {
                 options: {
                     urns: [...previewUrns, urn],
+                    zoom:100,
                     wheelZoom: 5
-                },
+                }
+                ,
             })
         }
     }
@@ -149,11 +151,31 @@ const Home: NextPage = () => {
     return (
         <Grid container xs={12}>
 
-            <Grid item xs={12} >
+            <Grid item xs={12} sm={2}>
+
+                <Grid xs={12}>
+
+                    <div className={styles.description}>
+                        <form onSubmit={(e) => {
+                            e.preventDefault()
+                        }}>
+                            <label className={styles.addressLabel}>
+                                Backpack Address
+                            </label>
+                            <input type="text" id={'addressInput'} className={styles.addressInput}
+                                   value={backpackAddress}
+                                   onChange={(event => {
+                                       setBackpackAddress(event.target.value)
+                                   })}/>
+                        </form>
+                    </div>
+
+                </Grid>
+
 
                 <Grid className={styles.sticky} xs={12}>
-                    <iframe id="previewIframe" className={styles.previewIframe} width={'100%'} height={'800px'}
-                            src={`https://wearable-preview.decentraland.org/?profile=${avatarAddress}&background=37333d`}/>
+                    <iframe id="previewIframe" className={styles.previewIframe} width={'100%'} height={'500px'}
+                            src={`https://wearable-preview.decentraland.org/?profile=${avatarAddress}`}/>
 
                     <div>
                         <h2>Wearing</h2>
@@ -167,10 +189,18 @@ const Home: NextPage = () => {
 
 
             </Grid>
+            <Grid item xs={12} sm={10}>
+                <div className={styles.grid}>
+                    {isLoading && <div>Loading</div>}
+                    {!isLoading && dataSorted && getSections(dataSorted).map(section => {
+                        return section
+                    })}
+                </div>
+            </Grid>
 
 
         </Grid>
     )
 }
 
-export default Home
+export default Backpack

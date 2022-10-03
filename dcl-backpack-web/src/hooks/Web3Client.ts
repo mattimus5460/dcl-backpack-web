@@ -49,7 +49,6 @@ export const useWeb3 = () => {
                 const signer = web3Provider.getSigner()
                 const address = await signer.getAddress()
                 const network = await web3Provider.getNetwork()
-
                 dispatch({
                     type: 'SET_WEB3_PROVIDER',
                     provider,
@@ -90,6 +89,7 @@ export const useWeb3 = () => {
     useEffect(() => {
         if (provider?.on) {
             const handleAccountsChanged = (accounts: string[]) => {
+                console.log(accounts)
                 dispatch({
                     type: 'SET_ADDRESS',
                     address: accounts[0],

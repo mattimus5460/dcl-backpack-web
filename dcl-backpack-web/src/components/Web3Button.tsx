@@ -1,5 +1,6 @@
 import React from 'react'
 import { useWeb3 } from '../hooks/Web3Client'
+import {useWeb3Context} from "../context/Web3Context";
 
 interface ConnectProps {
     connect: (() => Promise<void>) | null
@@ -25,7 +26,7 @@ const DisconnectButton = ({ disconnect }: DisconnectProps) => {
 }
 
 export function Web3Button() {
-    const { web3Provider, connect, disconnect } = useWeb3()
+    const { web3Provider, connect, disconnect } = useWeb3Context()
 
     return web3Provider ? (
         <DisconnectButton disconnect={disconnect} />
