@@ -1,6 +1,6 @@
 import React from 'react'
-import { useWeb3 } from '../hooks/Web3Client'
-import {useWeb3Context} from "../context/Web3Context";
+import { useWeb3 } from '../../hooks/Web3Client'
+import {useWeb3Context} from "../../context/Web3Context";
 
 interface ConnectProps {
     connect: (() => Promise<void>) | null

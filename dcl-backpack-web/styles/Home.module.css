@@ -83,7 +83,7 @@
   border: 1px solid #37333d;
   border-radius: 10px;
   transition: color 0.15s ease, border-color 0.15s ease;
-  max-width: 250px;
+  width: 150px;
   background-color: #242129;
 }
 
@@ -158,4 +158,8 @@
 .sticky {
   position: sticky;
   top: 0;
+}
+
+.profileImage {
+  height: 60px;
 }

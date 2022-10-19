@@ -25,6 +25,49 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 }
 
+
+export async function fetchPlayerDataProfileAvatar(userId: string | string[]) {
+    //const userData = await getUserData()
+    //const playerRealm = await getCurrentRealm()
+
+    let url = `https://peer.decentraland.org/lambdas/profile/${userId}`.toString()
+
+    try {
+        let response = await fetch(url,
+            { headers: {
+                    'Cache-Control': 'no-cache'
+                }})
+        let json = await response.json()
+
+        console.log("player avatar:", json.avatars[0])
+        return json.avatars[0]
+    } catch {
+        console.log("an error occurred while reaching for player data")
+    }
+}
+
+
+export async function fetchPlayerDataProfileSnapshot(userId: string | string[]) {
+    //const userData = await getUserData()
+    //const playerRealm = await getCurrentRealm()
+
+    let url = `https://peer.decentraland.org/lambdas/profile/${userId}`.toString()
+
+    try {
+        let response = await fetch(url,
+            { headers: {
+                    'Cache-Control': 'no-cache'
+                }})
+        let json = await response.json()
+
+        console.log("player snapshot:", json.avatars[0].avatar.snapshots.face256)
+        return json.avatars[0].avatar.snapshots.face256
+    } catch {
+        console.log("an error occurred while reaching for player data")
+    }
+}
+
+
 export async function fetchPlayerDataProfileWearables(userId: string | string[]) {
     //const userData = await getUserData()
     //const playerRealm = await getCurrentRealm()

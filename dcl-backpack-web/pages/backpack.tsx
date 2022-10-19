@@ -2,10 +2,12 @@ import type {NextPage} from 'next'
 import styles from '../styles/Home.module.css'
 import {useEffect, useState} from "react";
 import {PreviewMessageType, sendMessage} from '@dcl/schemas'
-import {fetchAllPlayerWearables, fetchPlayerDataProfileWearables, getWearableInfo} from "./api/wearables/[...params]";
+import {fetchAllPlayerWearables} from "./api/wearables/[...params]";
 import {Grid} from "@mui/material";
-import { Web3Button } from '../src/components/Web3Button';
 import {useWeb3Context} from "../src/context/Web3Context";
+import PreviewFrame from "../src/components/wearables/PreviewFrame";
+import {useWearableContext} from "../src/context/WearableContext";
+import CurrentlyWearing from "../src/components/wearables/CurrentlyWearing";
 
 
 const Backpack: NextPage = () => {
@@ -14,31 +16,12 @@ const Backpack: NextPage = () => {
     const [dataSorted, setDataSorted] = useState<Map<string, any> | null>(null)
     const [isLoading, setLoading] = useState(false)
     const [previewUrns, setPreviewUrns] = useState<string[]>([])
-    const [currentlyWearing, setCurrentlyWearing] = useState<string[]>([])
-    const [currentlyWearingImages, setCurrentlyWearingImages] = useState<string[] | undefined[] | undefined>([])
     const [backpackAddress, setBackpackAddress] = useState<string | undefined>()
     // const [avatarAddress, setAvatarAddress] = useState<string | undefined>()
 
     const {address: avatarAddress} = useWeb3Context()
 
-    useEffect(() => {
-
-        if(!currentlyWearing)
-            return
-
-        const getThumbnail = async (urn: string) => {
-            const info = await getWearableInfo(urn)
-            return info?.thumbnail
-        }
-
-        const allWearables: Promise<string | undefined>[] = currentlyWearing.map((urn) => {
-            return getThumbnail(urn)
-        })
-
-        // @ts-ignore
-        Promise.all(allWearables).then(setCurrentlyWearingImages)
-
-    }, [currentlyWearing])
+    const {currentlyWearing, setCurrentlyWearing} = useWearableContext()
 
 
     useEffect(() => {
@@ -75,15 +58,6 @@ const Backpack: NextPage = () => {
             })
     }, [backpackAddress, avatarAddress])
 
-    useEffect(() => {
-        if (!avatarAddress)
-            return
-
-        fetchPlayerDataProfileWearables(avatarAddress)
-            .then((wearableResp) => {
-                setCurrentlyWearing(wearableResp)
-            })
-    }, [avatarAddress])
 
     const getNameForCategory = (categoryName: string) => {
         return categoryName.split("_").map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(" ")
@@ -121,7 +95,7 @@ const Backpack: NextPage = () => {
         return (
             <div className={`${styles.card} ${isCardSelected(item.definition.id) ? styles.selected : ''}`}>
                 <a onClick={() => sendUpdate(item.definition.id)} href="#">
-                    <img width={'120px'} height={'120px'} src={item.definition.thumbnail}/>
+                    <img width={'100px'} height={'100px'} src={item.definition.thumbnail}/>
                     {/*<h4>{item.definition.name}</h4>*/}
                     {/*<p>{item.definition.description}</p>*/}
                 </a>
@@ -138,16 +112,13 @@ const Backpack: NextPage = () => {
         if (iframe && iframe.contentWindow) {
             sendMessage(iframe.contentWindow, PreviewMessageType.UPDATE, {
                 options: {
-                    urns: [...previewUrns, urn],
-                    zoom:100,
-                    wheelZoom: 5
+                    urns: [...previewUrns, urn]
                 }
                 ,
             })
         }
     }
 
-    // @ts-ignore
     return (
         <Grid container xs={12}>
 
@@ -174,14 +145,14 @@ const Backpack: NextPage = () => {
 
 
                 <Grid className={styles.sticky} xs={12}>
-                    <iframe id="previewIframe" className={styles.previewIframe} width={'100%'} height={'500px'}
-                            src={`https://wearable-preview.decentraland.org/?profile=${avatarAddress}`}/>
+
+                    {avatarAddress && <PreviewFrame avatarAddress={avatarAddress} height={'400px'}/>}
 
                     <div>
                         <h2>Wearing</h2>
                         <div className={styles.grid}>
-                            {// @ts-ignore
-                                getCurrentlyWearingSection(currentlyWearingImages)}
+
+                            <CurrentlyWearing/>
                         </div>
                     </div>
 

@@ -1,7 +1,6 @@
 import {ethers} from "ethers";
 
 export type Web3ProviderState = {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     provider: any
     web3Provider: ethers.providers.Web3Provider | null | undefined
     address: string | null | undefined
