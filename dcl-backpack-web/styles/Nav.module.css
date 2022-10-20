@@ -1,0 +1,32 @@
+.nav_item {
+    padding-bottom:1.2em;
+    padding-top:  1em;
+    margin-right: 1em;
+    cursor: pointer;
+}
+
+
+.nav_item_active {
+    border-bottom: 3px solid #e53359;
+}
+
+.navbar {
+    border-bottom: 1px solid #242129;
+    padding-top: 1em;
+}
+
+.nav_container {
+    display: flex;
+}
+
+.logo {
+    float:left;
+}
+
+
+.logo_name {
+    float:left;
+    padding-top: .8em;
+    margin-left: .5em;
+    font-weight: bold;
+}
