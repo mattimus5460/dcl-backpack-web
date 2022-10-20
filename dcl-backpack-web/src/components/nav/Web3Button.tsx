@@ -1,13 +1,15 @@
 import React from 'react'
 import { useWeb3 } from '../../hooks/Web3Client'
 import {useWeb3Context} from "../../context/Web3Context";
+import {inspect} from "util";
+import styles from '../../../styles/Home.module.css'
 
 interface ConnectProps {
     connect: (() => Promise<void>) | null
 }
 const ConnectButton = ({ connect }: ConnectProps) => {
     return connect ? (
-        <button onClick={connect}>Connect</button>
+        <button className={`${styles.connectButton} ${styles.web3Button}`} onClick={connect}>Sign In</button>
     ) : (
         <button>Loading...</button>
 )
@@ -19,7 +21,7 @@ interface DisconnectProps {
 
 const DisconnectButton = ({ disconnect }: DisconnectProps) => {
     return disconnect ? (
-        <button onClick={disconnect}>Disconnect</button>
+        <button className={`${styles.disconnectButton} ${styles.web3Button}`}  onClick={disconnect}>Sign Out</button>
     ) : (
         <button>Loading...</button>
 )

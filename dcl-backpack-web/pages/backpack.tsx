@@ -17,7 +17,6 @@ const Backpack: NextPage = () => {
     const [isLoading, setLoading] = useState(false)
     const [previewUrns, setPreviewUrns] = useState<string[]>([])
     const [backpackAddress, setBackpackAddress] = useState<string | undefined>()
-    // const [avatarAddress, setAvatarAddress] = useState<string | undefined>()
 
     const {address: avatarAddress} = useWeb3Context()
 
@@ -67,24 +66,17 @@ const Backpack: NextPage = () => {
         const allCategories: JSX.Element[] = []
         wearableData.forEach((items, category) => {
             allCategories.push((
-                <div>
-                    <h1>{getNameForCategory(category)}</h1>
-                    <div className={styles.grid}>
+                <Grid sx={{borderBottom:'1px solid #242129'}} container>
+                    <Grid xs={1}>
+                        <h3>{getNameForCategory(category)}</h3>
+                    </Grid>
+                    <Grid xs={11} container>
                         {items.map(getSectionItem)}
-                    </div>
-                </div>
+                    </Grid>
+                </Grid>
             ))
         });
         return allCategories;
-    }
-
-    const getCurrentlyWearingSection = (wearableImages: string[]) => {
-        return wearableImages.map((image) => (
-                image && <div className={`${styles.card}`}>
-                    <img width={'100px'} height={'100px'} src={image}/>
-                </div>
-            )
-        )
     }
 
     const isCardSelected = (urn: string) => {
@@ -93,13 +85,13 @@ const Backpack: NextPage = () => {
 
     const getSectionItem = (item: any) => {
         return (
-            <div className={`${styles.card} ${isCardSelected(item.definition.id) ? styles.selected : ''}`}>
+            <Grid xs={12} className={`${styles.card} ${isCardSelected(item.definition.id) ? styles.selected : ''}`}>
                 <a onClick={() => sendUpdate(item.definition.id)} href="#">
-                    <img width={'100px'} height={'100px'} src={item.definition.thumbnail}/>
-                    {/*<h4>{item.definition.name}</h4>*/}
+                    <img src={item.definition.thumbnail}/>
+                    {/*{item.definition.name}*/}
                     {/*<p>{item.definition.description}</p>*/}
                 </a>
-            </div>
+            </Grid>
         )
     }
 
@@ -121,11 +113,8 @@ const Backpack: NextPage = () => {
 
     return (
         <Grid container xs={12}>
-
             <Grid item xs={12} sm={2}>
-
-                <Grid xs={12}>
-
+                <Grid xs={10}>
                     <div className={styles.description}>
                         <form onSubmit={(e) => {
                             e.preventDefault()
@@ -140,36 +129,23 @@ const Backpack: NextPage = () => {
                                    })}/>
                         </form>
                     </div>
-
                 </Grid>
-
 
                 <Grid className={styles.sticky} xs={12}>
-
                     {avatarAddress && <PreviewFrame avatarAddress={avatarAddress} height={'400px'}/>}
 
-                    <div>
-                        <h2>Wearing</h2>
-                        <div className={styles.grid}>
-
-                            <CurrentlyWearing/>
-                        </div>
+                    <div className={styles.grid}>
+                        <CurrentlyWearing/>
                     </div>
-
                 </Grid>
-
-
-            </Grid>
-            <Grid item xs={12} sm={10}>
-                <div className={styles.grid}>
-                    {isLoading && <div>Loading</div>}
-                    {!isLoading && dataSorted && getSections(dataSorted).map(section => {
-                        return section
-                    })}
-                </div>
             </Grid>
 
-
+            <Grid container xs={12} sm={10}>
+                {isLoading && <div>Loading</div>}
+                {!isLoading && dataSorted && getSections(dataSorted).map(section => {
+                    return section
+                })}
+            </Grid>
         </Grid>
     )
 }

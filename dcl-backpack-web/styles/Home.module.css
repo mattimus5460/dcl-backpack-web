@@ -16,9 +16,10 @@
   display: flex;
   flex: 1;
   padding: 2rem 0;
-  border-top: 1px solid #eaeaea;
+  border-top: 1px solid #242129;
   justify-content: center;
   align-items: center;
+  color: #37333d;
 }
 
 .footer a {
@@ -76,20 +77,26 @@
 
 .card {
   margin: .25rem;
-  padding: .55rem;
   text-align: center;
   color: inherit;
   text-decoration: none;
+  padding: .1em;
   border: 1px solid #37333d;
   border-radius: 10px;
   transition: color 0.15s ease, border-color 0.15s ease;
-  width: 150px;
+  max-width: 110px;
   background-color: #242129;
+  background-image: linear-gradient(125deg, #242129,  #37333d);
 }
 
 .card h4 {
   width: 175px;
   margin: .2em .2em
+}
+
+.card img {
+  width: 100px;
+  height: 100px;
 }
 
 
@@ -99,7 +106,9 @@
 .card.selected{
   color: #0070f3;
   background-color: #37333d;
-  border: 1px solid  #242129;
+  background-image: linear-gradient(#37333d,  #242129);
+  border: 2px solid  #e53359;
+  margin: .24rem;
 }
 
 .card h2 {
@@ -145,14 +154,22 @@
   padding: 1em;
   border-radius: .6em;
   border: none;
-  width: 360px;
+  font-size: .5em;
 }
 
 .addressInput {
   padding: 1em;
   border-radius: .6em;
   border: none;
-  width: 360px;
+  width: 100%;
+  background-color:#242129 ;
+}
+
+.addressInput:focus {
+
+  background-color:#242129 ;
+  border: none;
+  outline: none;
 }
 
 .sticky {
@@ -163,3 +180,32 @@
 .profileImage {
   height: 60px;
 }
+
+.profileName {
+  color: white;
+}
+
+.web3Button {
+  background: none;
+  font-weight: bold;
+  color: white;
+  border: none;
+}
+
+.connectButton {
+
+  font-size: 1em;
+}
+
+.web3Button:hover {
+  cursor: pointer;
+  color: #e53359;
+}
+
+.disconnectButton {
+
+  font-size: .8em;
+  color: gray;
+}
+
+

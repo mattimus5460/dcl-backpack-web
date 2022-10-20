@@ -13,10 +13,13 @@ function NavbarWalletConnect() {
 
     return (
         <>
-            <Grid sx={{textAlign:'right'}} xs={6}>
-                {/*<form onSubmit={(e) => {*/}
-                {/*    e.preventDefault()*/}
-                {/*}}>*/}
+
+
+            <Grid sx={{paddingTop:'.28em'}} xs={6}>
+                {profile.name && <div className={styles.profileName}>{profile.name}</div>}
+                <Web3Button/>
+            </Grid>
+            <Grid sx={{textAlign:'left'}} xs={6}>
                 {/*<label className={styles.addressLabel}>*/}
                 {/*    Avatar Address*/}
                 {/*</label>*/}
@@ -24,28 +27,10 @@ function NavbarWalletConnect() {
                 {/*    "..." +*/}
                 {/*    String(avatarAddress).substring(38)}</div>}*/}
 
-
-
-                {profile.snapshot && <img className={styles.profileImage} src={profile.snapshot} alt={'user avatar photo'}/> }
-
-
-                {/*    <label className={styles.addressLabel}>*/}
-                {/*        Backpack Address*/}
-                {/*    </label>*/}
-                {/*    <input type="text" id={'addressInput'} className={styles.addressInput}*/}
-                {/*           value={backpackAddress}*/}
-                {/*           onChange={(event => {*/}
-                {/*               setBackpackAddress(event.target.value)*/}
-                {/*           })}/>*/}
-                {/*</form>*/}
-
-
-            </Grid>
-
-            <Grid sx={{paddingTop:'.28em'}} xs={6}>
-
-                {profile.name && <div>{profile.name}</div>}
-                <Web3Button/>
+                {profile.snapshot ?
+                    <img className={styles.profileImage} src={profile.snapshot} alt={'user avatar photo'}/>
+                    :
+                    <></>}
             </Grid>
         </>
     )

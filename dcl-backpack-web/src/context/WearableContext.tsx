@@ -44,8 +44,12 @@ export const WearableContextProvider = ({children}: Props) => {
 
 
     useEffect(() => {
-        if (!avatarAddress)
+        if (!avatarAddress){
+            setProfile({name:'',snapshot:''})
+            setCurrentlyWearing([])
+            setCurrentlyWearingData([])
             return
+        }
 
         fetchPlayerDataProfileAvatar(avatarAddress)
             .then((profile) => {

@@ -34,8 +34,6 @@ const WearableCard: React.FC<WearableCardProps> = ({name, thumbnail}) => {
     return (
         <div className={`${styles.card}`}>
             <img width={'100px'} height={'100px'} src={thumbnail}/>
-            <br/>
-            {name}
         </div>
     )
 }

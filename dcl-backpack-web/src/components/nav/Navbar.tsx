@@ -1,12 +1,14 @@
 import {NextRouter, useRouter} from "next/router";
 import Link from "next/link";
 
+import styles from '../../../styles/Nav.module.css'
+
 const navigationRoutes = ["home", "backpack", "outfits"];
 
 export default function Navbar() {
     const router = useRouter();
     return (
-        <nav className="nav_container">
+        <nav className={styles.nav_container}>
             {navigationRoutes.map((singleRoute) => {
                 return (
                     <NavigationLink
@@ -22,20 +24,18 @@ export default function Navbar() {
 }
 
 interface NavLinkProps {
-    href:string,
-    text:string,
-    router:NextRouter
+    href: string,
+    text: string,
+    router: NextRouter
 }
 
-export const NavigationLink = ({ href, text, router }: NavLinkProps) => {
+export const NavigationLink = ({href, text, router}: NavLinkProps) => {
     const isActive = router.asPath === (href === "/home" ? "/" : href);
     return (
         <Link href={href === "/home" ? "/" : href} passHref>
-            <a
-                href={href === "/home" ? "/" : href}
-                className={`${isActive && "nav_item_active"} nav_item`}>
+            <div className={`${isActive && styles.nav_item_active} ${styles.nav_item}`}>
                 {text.charAt(0).toUpperCase() + text.slice(1)}
-            </a>
+            </div>
         </Link>
     );
 }

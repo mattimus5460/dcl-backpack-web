@@ -16,12 +16,3 @@ a {
   box-sizing: border-box;
 }
 
-
-.nav_item {
-  margin:1em;
-}
-
-
-.nav_item_active {
-  font-weight: bold;
-}

@@ -22,9 +22,6 @@ const Home: NextPage = () => {
             </Grid>
 
             <Grid alignItems={'center'} xs={12}>
-                <Item>
-                    <h2>Wearing</h2>
-                </Item>
 
                 <div className={styles.grid}>
                     <CurrentlyWearing/>
