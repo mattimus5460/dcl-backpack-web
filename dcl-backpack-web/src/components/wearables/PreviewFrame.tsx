@@ -1,5 +1,6 @@
 import styles from "../../../styles/Home.module.css";
 import React from "react";
+import {useWearableContext} from "../../context/WearableContext";
 
 export interface PreviewFrameProps {
     avatarAddress: string
@@ -7,6 +8,8 @@ export interface PreviewFrameProps {
 }
 
 const PreviewFrame:React.FC<PreviewFrameProps> = ({avatarAddress, height}) => {
+
+    const {currentlyWearing} = useWearableContext()
 
     return (
         <iframe id="previewIframe" className={styles.previewIframe} width={'100%'} height={height}

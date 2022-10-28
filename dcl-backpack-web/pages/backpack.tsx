@@ -1,8 +1,9 @@
 import type {NextPage} from 'next'
 import homeStyles from '../styles/Home.module.css'
 import wearablesStyles from '../styles/Wearables.module.css'
+import backpackStyles from '../styles/Backpack.module.css'
 import {useEffect, useState} from "react";
-import {PreviewMessageType, sendMessage} from '@dcl/schemas'
+import {Item, PreviewMessageType, sendMessage} from '@dcl/schemas'
 import {fetchAllPlayerWearables, getMktLinkFromUrn, LambdaWearable} from "./api/wearables/[...params]";
 import {Checkbox, FormControlLabel, Grid, Popover, Typography} from "@mui/material";
 import {useWeb3Context} from "../src/context/Web3Context";
@@ -90,7 +91,7 @@ const Backpack: NextPage = () => {
             <Grid xs={showFullWearableInfo ? 1.2 : .7}>
                 <a
                     onClick={() => {
-                        sendUpdate(item.definition?.id ?? '');
+                        sendUpdate(item);
                     }}>
                     <div
                         className={`${homeStyles.card} ${isCardSelected(item.definition.id) ? homeStyles.selected : ''}  ${wearablesStyles[item.definition.rarity]}  `}>
@@ -101,27 +102,29 @@ const Backpack: NextPage = () => {
                 </a>
                 <a onMouseOver={(e) => handlePopoverOpen(e, item)}>+</a>
                 {showFullWearableInfo &&
-                    <div className={`${homeStyles.cardLabel} ${isCardSelected(item.definition.id) ? homeStyles.selected : ''}`}>
+                    <div
+                        className={`${homeStyles.cardLabel} ${isCardSelected(item.definition.id) ? homeStyles.selected : ''}`}>
                         <p>
                             <a target={'_blank'} href={getMktLinkFromUrn(item.urn)}>{item.definition?.name}</a>
                         </p>
                         <p>{item.definition.description}</p>
-                        <p>{item.definition.rarity}</p>
+                        {/*<p>{item.definition.rarity}</p>*/}
                     </div>}
             </Grid>
         )
     }
 
-    const sendUpdate = (urn: string) => {
+    const sendUpdate = (item: LambdaWearable) => {
         const iframe = document.getElementById("previewIframe") as HTMLIFrameElement;
 
-        setPreviewUrns([urn, ...previewUrns])
-        setCurrentlyWearing([urn, ...currentlyWearing])
+
+        setPreviewUrns([item.urn, ...previewUrns])
+        setCurrentlyWearing([item.urn, ...currentlyWearing])
 
         if (iframe && iframe.contentWindow) {
             sendMessage(iframe.contentWindow, PreviewMessageType.UPDATE, {
                 options: {
-                    urns: [...previewUrns, urn]
+                    urns: [...previewUrns, item.urn]
                 }
                 ,
             })
@@ -145,7 +148,7 @@ const Backpack: NextPage = () => {
         return (<>
             <a target={'_blank'} href={getMktLinkFromUrn(item.urn)}>{item.definition?.name}</a><br/>
             {item.definition?.description} <br/>
-            {item.definition?.rarity} <br/>
+            {/*{item.definition?.rarity} <br/>*/}
         </>)
     }
 
@@ -159,14 +162,14 @@ const Backpack: NextPage = () => {
         <Grid container xs={12}>
             <Grid item xs={12} sm={2}>
                 <Grid xs={12}>
-                    <div className={homeStyles.description}>
+                    <div className={backpackStyles.description}>
                         <form onSubmit={(e) => {
                             e.preventDefault()
                         }}>
-                            <label className={homeStyles.addressLabel}>
+                            <label className={backpackStyles.addressLabel}>
                                 Backpack Address
                             </label>
-                            <input type="text" id={'addressInput'} className={homeStyles.addressInput}
+                            <input type="text" id={'addressInput'} className={backpackStyles.addressInput}
                                    value={backpackAddress}
                                    onChange={(event => {
                                        setBackpackAddress(event.target.value)
@@ -176,7 +179,7 @@ const Backpack: NextPage = () => {
                 </Grid>
 
                 <Grid xs={12}>
-                    <div className={homeStyles.description}>
+                    <div className={backpackStyles.description}>
                         <FormControlLabel
                             control={<Checkbox id={'showFullWearableInfoCheckbox'} color={'secondary'}
                                                checked={showFullWearableInfo} onChange={toggleShowFullWearableInfo}/>}
@@ -185,7 +188,7 @@ const Backpack: NextPage = () => {
                     </div>
                 </Grid>
 
-                <Grid className={homeStyles.sticky} xs={12}>
+                <Grid className={backpackStyles.sticky} xs={12}>
                     {avatarAddress && <PreviewFrame avatarAddress={avatarAddress} height={'500px'}/>}
                 </Grid>
             </Grid>
@@ -210,7 +213,8 @@ const Backpack: NextPage = () => {
                     }}
                     onClose={handlePopoverClose}
                 >
-                    <Typography sx={{p: 1}}>{popoverContent}</Typography>
+                    <Typography
+                        className={`${backpackStyles.popover}`} sx={{p: 1}}>{popoverContent}</Typography>
                 </Popover>
             </Grid>
         </Grid>

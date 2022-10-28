@@ -2,7 +2,7 @@ import React from 'react'
 import { useWeb3 } from '../../hooks/Web3Client'
 import {useWeb3Context} from "../../context/Web3Context";
 import {inspect} from "util";
-import styles from '../../../styles/Home.module.css'
+import styles from '../../../styles/Nav.module.css'
 
 interface ConnectProps {
     connect: (() => Promise<void>) | null

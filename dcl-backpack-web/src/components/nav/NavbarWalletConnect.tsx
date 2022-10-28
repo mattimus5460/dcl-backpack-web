@@ -1,6 +1,6 @@
 import {Avatar, Grid} from "@mui/material";
 import {Web3Button} from "./Web3Button";
-import styles from "../../../styles/Home.module.css";
+import styles from "../../../styles/Nav.module.css";
 import {useWearableContext} from "../../context/WearableContext";
 
 function NavbarWalletConnect() {
@@ -8,7 +8,7 @@ function NavbarWalletConnect() {
 
     return (
         <>
-            <Grid sx={{paddingTop: '.28em'}} xs={6}>
+            <Grid xs={6}>
                 {profile.name && <div className={styles.profileName}>{profile.name}</div>}
                 <Web3Button/>
             </Grid>

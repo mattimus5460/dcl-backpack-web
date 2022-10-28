@@ -30,3 +30,34 @@
     margin-left: .5em;
     font-weight: bold;
 }
+
+
+.profileImage {
+    background: rgba(103,99,112,.4);
+}
+
+.profileName {
+    color: white;
+}
+
+.web3Button {
+    background: none;
+    font-weight: bold;
+    color: white;
+    border: none;
+}
+
+.connectButton {
+    font-size: 1em;
+}
+
+.web3Button:hover {
+    cursor: pointer;
+    color: #e53359;
+}
+
+.disconnectButton {
+    font-size: .8em;
+    color: gray;
+}
+
