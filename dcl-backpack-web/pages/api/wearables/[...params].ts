@@ -1,17 +1,17 @@
 import {NextApiRequest, NextApiResponse} from "next";
-import {Item, NFT} from '@dcl/schemas'
+import {Item, NFT, Wearable, WearableRepresentation} from '@dcl/schemas'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    const { params } = req.query
+    const {params} = req.query
 
-    if (!params || !params[0]){
-        res.status(400).json({ err: 'userId is a required parameter' });
+    if (!params || !params[0]) {
+        res.status(400).json({err: 'userId is a required parameter'});
         return
     }
 
     if (req.method === 'GET') {
 
-        if(params[1] && params[1] === "wearing") {
+        if (params[1] && params[1] === "wearing") {
             const wearables = await fetchPlayerDataProfileWearables(params[0])
             res.status(200).json(wearables);
         } else {
@@ -34,9 +34,11 @@ export async function fetchPlayerDataProfileAvatar(userId: string | string[]) {
 
     try {
         let response = await fetch(url,
-            { headers: {
+            {
+                headers: {
                     'Cache-Control': 'no-cache'
-                }})
+                }
+            })
         let json = await response.json()
 
         console.log("player avatar:", json.avatars[0])
@@ -55,9 +57,11 @@ export async function fetchPlayerDataProfileSnapshot(userId: string | string[]) 
 
     try {
         let response = await fetch(url,
-            { headers: {
+            {
+                headers: {
                     'Cache-Control': 'no-cache'
-                }})
+                }
+            })
         let json = await response.json()
 
         console.log("player snapshot:", json.avatars[0].avatar.snapshots.face256)
@@ -76,9 +80,11 @@ export async function fetchPlayerDataProfileWearables(userId: string | string[])
 
     try {
         let response = await fetch(url,
-            { headers: {
+            {
+                headers: {
                     'Cache-Control': 'no-cache'
-                }})
+                }
+            })
         let json = await response.json()
 
         console.log("full response: ", json)
@@ -89,6 +95,26 @@ export async function fetchPlayerDataProfileWearables(userId: string | string[])
     }
 }
 
+interface LambdasWearableWithRarity extends LambdasWearable {
+    rarity: string
+}
+
+export interface LambdaWearable {
+    urn: string;
+    amount: number;
+    definition?: LambdasWearableWithRarity | undefined
+}
+
+export type LambdasWearable = Omit<Wearable, 'data'> & {
+    data: Omit<Wearable['data'], 'representations'> & {
+        representations: LambdasWearableRepresentation[]
+    }
+}
+export type LambdasWearableRepresentation = Omit<WearableRepresentation, 'contents'> & {
+    contents: { key: string; url: string }[]
+}
+
+
 export async function fetchAllPlayerWearables(userId: string | string[]) {
     //const userData = await getUserData()
     //const playerRealm = await getCurrentRealm()
@@ -97,10 +123,12 @@ export async function fetchAllPlayerWearables(userId: string | string[]) {
 
     try {
         let response = await fetch(url,
-            { headers: {
+            {
+                headers: {
                     'Cache-Control': 'no-cache'
-                }})
-        let json = await response.json()
+                }
+            })
+        let json: LambdaWearable[] = await response.json()
 
         console.log("player owns:", json)
         return json
@@ -113,14 +141,15 @@ const nftApiByEnv = `https://nft-api.decentraland.org`
 
 class NFTApi {
     async fetchItem(contractAddress: string, itemId: string) {
-        const { data } = await json<{ data: Item[] }>(`${nftApiByEnv}/v1/items?contractAddress=${contractAddress}&itemId=${itemId}`)
+        const {data} = await json<{ data: Item[] }>(`${nftApiByEnv}/v1/items?contractAddress=${contractAddress}&itemId=${itemId}`)
         if (data.length === 0) {
             throw new Error(`Item not found for contractAddress="${contractAddress}" itemId="${itemId}"`)
         }
         return data[0]
     }
+
     async fetchNFT(contractAddress: string, tokenId: string) {
-        const { data } = await json<{ data: { nft: NFT }[] }>(
+        const {data} = await json<{ data: { nft: NFT }[] }>(
             `${nftApiByEnv}/v1/nfts?contractAddress=${contractAddress}&tokenId=${tokenId}`
         )
         if (data.length === 0) {
@@ -154,7 +183,7 @@ export async function sleep(ms: number) {
     return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
-export const getWearableInfo = async (wearable:string) => {
+export const getWearableInfo = async (wearable: string) => {
     const splitId = wearable.split(':')
     const collection = splitId[3]
     const contract = splitId[4]
@@ -166,4 +195,13 @@ export const getWearableInfo = async (wearable:string) => {
         console.log("item response: ", itemResp)
         return itemResp
     }
+}
+
+export const getMktLinkFromUrn = (wearable: string) => {
+    const splitId = wearable.split(':')
+    // const collection = splitId[3]
+    const contract = splitId[4]
+    const itemId = splitId[5]
+
+    return `https://market.decentraland.org/contracts/${contract}/items/${itemId}`
 }

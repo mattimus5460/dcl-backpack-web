@@ -1,22 +1,22 @@
 import type {NextPage} from 'next'
-import styles from '../styles/Home.module.css'
+import homeStyles from '../styles/Home.module.css'
+import wearablesStyles from '../styles/Wearables.module.css'
 import {useEffect, useState} from "react";
 import {PreviewMessageType, sendMessage} from '@dcl/schemas'
-import {fetchAllPlayerWearables} from "./api/wearables/[...params]";
-import {Grid} from "@mui/material";
+import {fetchAllPlayerWearables, getMktLinkFromUrn, LambdaWearable} from "./api/wearables/[...params]";
+import {Checkbox, FormControlLabel, Grid, Popover, Typography} from "@mui/material";
 import {useWeb3Context} from "../src/context/Web3Context";
 import PreviewFrame from "../src/components/wearables/PreviewFrame";
 import {useWearableContext} from "../src/context/WearableContext";
-import CurrentlyWearing from "../src/components/wearables/CurrentlyWearing";
 
 
 const Backpack: NextPage = () => {
 
-    const [data, setData] = useState(null)
     const [dataSorted, setDataSorted] = useState<Map<string, any> | null>(null)
     const [isLoading, setLoading] = useState(false)
     const [previewUrns, setPreviewUrns] = useState<string[]>([])
     const [backpackAddress, setBackpackAddress] = useState<string | undefined>()
+    const [showFullWearableInfo, setShowFullWearableInfo] = useState(false)
 
     const {address: avatarAddress} = useWeb3Context()
 
@@ -31,8 +31,6 @@ const Backpack: NextPage = () => {
 
                 if (!wearableResp)
                     return
-
-                setData(wearableResp)
 
                 const wearablesByCategory = new Map()
                 wearableResp.forEach((wearable: any) => {
@@ -66,7 +64,7 @@ const Backpack: NextPage = () => {
         const allCategories: JSX.Element[] = []
         wearableData.forEach((items, category) => {
             allCategories.push((
-                <Grid sx={{borderBottom:'1px solid #242129'}} container>
+                <Grid sx={{borderBottom: '1px solid #242129', padding: '1em'}} container>
                     <Grid xs={1}>
                         <h3>{getNameForCategory(category)}</h3>
                     </Grid>
@@ -83,14 +81,33 @@ const Backpack: NextPage = () => {
         return currentlyWearing && currentlyWearing.includes(urn);
     }
 
-    const getSectionItem = (item: any) => {
+    const getSectionItem = (item: LambdaWearable) => {
+
+        if (!item || !item.definition)
+            return <></>
+
         return (
-            <Grid xs={12} className={`${styles.card} ${isCardSelected(item.definition.id) ? styles.selected : ''}`}>
-                <a onClick={() => sendUpdate(item.definition.id)} href="#">
-                    <img src={item.definition.thumbnail}/>
-                    {/*{item.definition.name}*/}
-                    {/*<p>{item.definition.description}</p>*/}
+            <Grid xs={showFullWearableInfo ? 1.2 : .7}>
+                <a
+                    onClick={() => {
+                        sendUpdate(item.definition?.id ?? '');
+                    }}>
+                    <div
+                        className={`${homeStyles.card} ${isCardSelected(item.definition.id) ? homeStyles.selected : ''}  ${wearablesStyles[item.definition.rarity]}  `}>
+                        <img alt={item.definition.name} width={'100%'} src={item.definition.thumbnail}/><br/>
+
+
+                    </div>
                 </a>
+                <a onMouseOver={(e) => handlePopoverOpen(e, item)}>+</a>
+                {showFullWearableInfo &&
+                    <div className={`${homeStyles.cardLabel} ${isCardSelected(item.definition.id) ? homeStyles.selected : ''}`}>
+                        <p>
+                            <a target={'_blank'} href={getMktLinkFromUrn(item.urn)}>{item.definition?.name}</a>
+                        </p>
+                        <p>{item.definition.description}</p>
+                        <p>{item.definition.rarity}</p>
+                    </div>}
             </Grid>
         )
     }
@@ -111,18 +128,45 @@ const Backpack: NextPage = () => {
         }
     }
 
+    function toggleShowFullWearableInfo() {
+        setShowFullWearableInfo(!showFullWearableInfo)
+    }
+
+
+    const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+    const [popoverContent, setPopoverContent] = useState<JSX.Element | null>()
+
+    const handlePopoverOpen = (event: React.MouseEvent<HTMLElement>, item: any) => {
+        setAnchorEl(event.currentTarget.parentElement);
+        setPopoverContent(createPopoverContent(item))
+    };
+
+    const createPopoverContent = (item: LambdaWearable) => {
+        return (<>
+            <a target={'_blank'} href={getMktLinkFromUrn(item.urn)}>{item.definition?.name}</a><br/>
+            {item.definition?.description} <br/>
+            {item.definition?.rarity} <br/>
+        </>)
+    }
+
+    const handlePopoverClose = () => {
+        setAnchorEl(null);
+    };
+
+    const open = Boolean(anchorEl);
+
     return (
         <Grid container xs={12}>
             <Grid item xs={12} sm={2}>
-                <Grid xs={10}>
-                    <div className={styles.description}>
+                <Grid xs={12}>
+                    <div className={homeStyles.description}>
                         <form onSubmit={(e) => {
                             e.preventDefault()
                         }}>
-                            <label className={styles.addressLabel}>
+                            <label className={homeStyles.addressLabel}>
                                 Backpack Address
                             </label>
-                            <input type="text" id={'addressInput'} className={styles.addressInput}
+                            <input type="text" id={'addressInput'} className={homeStyles.addressInput}
                                    value={backpackAddress}
                                    onChange={(event => {
                                        setBackpackAddress(event.target.value)
@@ -131,20 +175,43 @@ const Backpack: NextPage = () => {
                     </div>
                 </Grid>
 
-                <Grid className={styles.sticky} xs={12}>
-                    {avatarAddress && <PreviewFrame avatarAddress={avatarAddress} height={'400px'}/>}
-
-                    <div className={styles.grid}>
-                        <CurrentlyWearing/>
+                <Grid xs={12}>
+                    <div className={homeStyles.description}>
+                        <FormControlLabel
+                            control={<Checkbox id={'showFullWearableInfoCheckbox'} color={'secondary'}
+                                               checked={showFullWearableInfo} onChange={toggleShowFullWearableInfo}/>}
+                            label="Show all wearable info"
+                        />
                     </div>
+                </Grid>
+
+                <Grid className={homeStyles.sticky} xs={12}>
+                    {avatarAddress && <PreviewFrame avatarAddress={avatarAddress} height={'500px'}/>}
                 </Grid>
             </Grid>
 
-            <Grid container xs={12} sm={10}>
+            <Grid container item xs={12} sm={10}>
                 {isLoading && <div>Loading</div>}
                 {!isLoading && dataSorted && getSections(dataSorted).map(section => {
                     return section
                 })}
+
+                <Popover
+                    id="mouse-over-popover"
+                    open={open}
+                    anchorEl={anchorEl}
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'left',
+                    }}
+                    transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'left',
+                    }}
+                    onClose={handlePopoverClose}
+                >
+                    <Typography sx={{p: 1}}>{popoverContent}</Typography>
+                </Popover>
             </Grid>
         </Grid>
     )

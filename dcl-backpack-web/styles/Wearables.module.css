@@ -1,0 +1,52 @@
+.rare {
+    background-image: linear-gradient(rgb(54, 207, 117, .25), #18141a);
+}
+
+.rare:hover {
+    background-image: linear-gradient(rgb(54, 207, 117, .5), #18141a);
+}
+
+.legendary {
+    background-image: linear-gradient(rgb(132, 45, 218, .25), #18141a);
+}
+
+.legendary:hover {
+    background-image: linear-gradient(rgb(132, 45, 218, .5), #18141a);
+}
+
+.mythic {
+    background-image: linear-gradient(rgb(255, 99, 225, .25), #18141a);
+}
+
+.mythic:hover {
+    background-image: linear-gradient(rgb(255, 99, 225, .5), #18141a);
+}
+
+.epic {
+    background-image: linear-gradient(rgb(61, 133, 230, .25), #18141a);
+}
+
+.epic:hover {
+    background-image: linear-gradient(rgb(61, 133, 230, .5), #18141a);
+}
+
+.uncommon {
+    background-image: linear-gradient(rgb(237, 109, 79, .25), #18141a);
+}
+.uncommon:hover {
+    background-image: linear-gradient(rgb(237, 109, 79, .5), #18141a);
+}
+
+.unique {
+    background-image: linear-gradient(rgb(255, 182, 38, .25), #18141a);
+}
+.unique:hover {
+    background-image: linear-gradient(rgb(255, 182, 38, .5), #18141a);
+}
+
+.common {
+    background-image: linear-gradient(rgb(171, 193, 193, .25), #18141a);
+}
+.common:hover {
+    background-image: linear-gradient(rgb(171, 193, 193, .5), #18141a);
+}
