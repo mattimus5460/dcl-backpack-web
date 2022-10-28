@@ -119,16 +119,16 @@ const Backpack: NextPage = () => {
 
 
         setPreviewUrns([item.urn, ...previewUrns])
-        setCurrentlyWearing([item.urn, ...currentlyWearing])
+        setCurrentlyWearing([...currentlyWearing, item.urn])
 
-        if (iframe && iframe.contentWindow) {
-            sendMessage(iframe.contentWindow, PreviewMessageType.UPDATE, {
-                options: {
-                    urns: [...previewUrns, item.urn]
-                }
-                ,
-            })
-        }
+        // if (iframe && iframe.contentWindow) {
+        //     sendMessage(iframe.contentWindow, PreviewMessageType.UPDATE, {
+        //         options: {
+        //             urns: [...previewUrns, item.urn]
+        //         }
+        //         ,
+        //     })
+        // }
     }
 
     function toggleShowFullWearableInfo() {

@@ -1,0 +1,44 @@
+.addressLabel {
+    padding: 1em;
+    border-radius: .6em;
+    border: none;
+    font-size: .5em;
+}
+
+.addressInput {
+    padding: 1em;
+    border-radius: .6em;
+    border: none;
+    width: 100%;
+    background-color:#242129 ;
+}
+
+.addressInput:focus {
+    background-color:#242129 ;
+    border: none;
+    outline: none;
+}
+
+
+.description {
+    margin: .1rem 0;
+    line-height: 1.5;
+    font-size: 1.5rem;
+    padding: .5em;
+}
+
+
+.sticky {
+    position: sticky;
+    top: 0;
+}
+
+.popover {
+    font-size: .8em;
+    text-align: center;
+    padding: 1em;
+}
+
+.popover a {
+    font-weight: bold;
+}

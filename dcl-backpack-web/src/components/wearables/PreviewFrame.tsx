@@ -7,13 +7,18 @@ export interface PreviewFrameProps {
     height: string
 }
 
-const PreviewFrame:React.FC<PreviewFrameProps> = ({avatarAddress, height}) => {
+const PreviewFrame: React.FC<PreviewFrameProps> = ({avatarAddress, height}) => {
 
     const {currentlyWearing} = useWearableContext()
 
+    const explodeUrns = (urns: string[]) => {
+        return urns.join('&urn=')
+    }
+
+
     return (
         <iframe id="previewIframe" className={styles.previewIframe} width={'100%'} height={height}
-                src={`https://wearable-preview.decentraland.org/?profile=${avatarAddress}&background=18141a`}/>
+                src={`https://wearable-preview.decentraland.org/?profile=${avatarAddress}&background=18141a&urn=${explodeUrns(currentlyWearing)} `}/>
     )
 }
 
