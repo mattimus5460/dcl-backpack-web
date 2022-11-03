@@ -1,8 +1,5 @@
 import type {NextPage} from 'next'
-import styles from '../styles/Home.module.css'
-import {Box, Grid} from "@mui/material";
-
-import {styled} from '@mui/material/styles';
+import {Grid} from "@mui/material";
 import {useWeb3Context} from "../src/context/Web3Context";
 import PreviewFrame from '../src/components/wearables/PreviewFrame';
 import CurrentlyWearing from "../src/components/wearables/CurrentlyWearing";
@@ -11,21 +8,14 @@ const Home: NextPage = () => {
 
     const {address: avatarAddress} = useWeb3Context()
 
-    const Item = styled(Box)(({theme}) => ({
-        textAlign: 'center',
-    }));
-
     return (
-        <Grid container xs={12}>
-            <Grid xs={12}>
+        <Grid container justifyContent={'center'} xs={12}>
+            <Grid xs={2}>
                 {avatarAddress && <PreviewFrame avatarAddress={avatarAddress} height={'800px'}/>}
             </Grid>
 
-            <Grid alignItems={'center'} xs={12}>
-
-                <div className={styles.grid}>
-                    <CurrentlyWearing/>
-                </div>
+            <Grid justifyContent={'center'} container xs={4}>
+                <CurrentlyWearing cardSize={3}/>
             </Grid>
         </Grid>
     )

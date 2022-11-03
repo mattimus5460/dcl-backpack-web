@@ -9,9 +9,16 @@ import Navbar from "../src/components/nav/Navbar";
 import {Grid} from "@mui/material";
 import NavbarWalletConnect from "../src/components/nav/NavbarWalletConnect";
 import {WearableContextProvider} from "../src/context/WearableContext";
+import {useRouter} from "next/router";
 
 
-function MyApp({Component, pageProps}: AppProps) {
+function ClosetApp({Component, pageProps}: AppProps) {
+
+    const router = useRouter();
+    const path = (/#!(\/.*)$/.exec(router.asPath) || [])[1];
+    if (path) {
+        router.replace(path);
+    }
 
     return (
         <>
@@ -23,13 +30,11 @@ function MyApp({Component, pageProps}: AppProps) {
             <Web3ContextProvider>
                 <WearableContextProvider>
                     <ThemeContextProvider>
-                        <Grid className={nav_styles.navbar} container xs={12}>
-                            <Grid xs={3.5}>
-                            </Grid>
+                        <Grid className={nav_styles.navbar} justifyContent={'center'} container xs={12}>
                             <Grid container xs={2}>
                                 <Grid container xs={10}>
                                     <Grid container xs={2}>
-                                        <img className={nav_styles.logo} width={'48px'} height={'48px'}
+                                        <img alt={'Decentraland Logo'} className={nav_styles.logo} width={'48px'} height={'48px'}
                                              src="/icon-48x48.png"/>
                                     </Grid>
                                     <Grid className={nav_styles.logo_name} container xs={6}>
@@ -40,9 +45,7 @@ function MyApp({Component, pageProps}: AppProps) {
                                 </Grid>
 
                             </Grid>
-                            <Grid xs={2.35}>
-                            </Grid>
-                            <Grid container xs={1}>
+                            <Grid container  justifyContent={'right'}  xs={2}>
                                 <NavbarWalletConnect/>
                             </Grid>
                         </Grid>
@@ -59,4 +62,4 @@ function MyApp({Component, pageProps}: AppProps) {
     )
 }
 
-export default MyApp
+export default ClosetApp

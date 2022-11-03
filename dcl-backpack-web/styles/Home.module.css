@@ -78,6 +78,7 @@
   transition: color 0.15s ease, border-color 0.15s ease;
   background-color: #242129;
   cursor: pointer;
+  align-content: center;
 }
 
 .card h4 {

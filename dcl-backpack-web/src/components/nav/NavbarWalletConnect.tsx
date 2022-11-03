@@ -8,11 +8,11 @@ function NavbarWalletConnect() {
 
     return (
         <>
-            <Grid xs={6}>
+            <Grid xs={2}>
                 {profile.name && <div className={styles.profileName}>{profile.name}</div>}
                 <Web3Button/>
             </Grid>
-            <Grid sx={{textAlign: 'left'}} xs={6}>
+            <Grid xs={2}>
                 {profile.snapshot ?
                     <Avatar className={styles.profileImage} alt={profile.name} src={profile.snapshot}/>
                     :

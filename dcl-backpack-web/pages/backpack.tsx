@@ -3,25 +3,25 @@ import homeStyles from '../styles/Home.module.css'
 import wearablesStyles from '../styles/Wearables.module.css'
 import backpackStyles from '../styles/Backpack.module.css'
 import {useEffect, useState} from "react";
-import {Item, PreviewMessageType, sendMessage} from '@dcl/schemas'
 import {fetchAllPlayerWearables, getMktLinkFromUrn, LambdaWearable} from "./api/wearables/[...params]";
-import {Checkbox, FormControlLabel, Grid, Popover, Typography} from "@mui/material";
+import {Box, Checkbox, FormControlLabel, Grid, Popover, Stack, Typography} from "@mui/material";
 import {useWeb3Context} from "../src/context/Web3Context";
 import PreviewFrame from "../src/components/wearables/PreviewFrame";
 import {useWearableContext} from "../src/context/WearableContext";
+import CurrentlyWearing from "../src/components/wearables/CurrentlyWearing";
+import {getNameForCategory} from "../src/utils/utils";
 
 
 const Backpack: NextPage = () => {
 
     const [dataSorted, setDataSorted] = useState<Map<string, any> | null>(null)
     const [isLoading, setLoading] = useState(false)
-    const [previewUrns, setPreviewUrns] = useState<string[]>([])
     const [backpackAddress, setBackpackAddress] = useState<string | undefined>()
     const [showFullWearableInfo, setShowFullWearableInfo] = useState(false)
 
     const {address: avatarAddress} = useWeb3Context()
 
-    const {currentlyWearing, setCurrentlyWearing} = useWearableContext()
+    const {currentlyWearing, updateCurrentlyWearing} = useWearableContext()
 
 
     useEffect(() => {
@@ -57,9 +57,6 @@ const Backpack: NextPage = () => {
     }, [backpackAddress, avatarAddress])
 
 
-    const getNameForCategory = (categoryName: string) => {
-        return categoryName.split("_").map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(" ")
-    }
 
     const getSections = (wearableData: Map<string, any>) => {
         const allCategories: JSX.Element[] = []
@@ -88,15 +85,20 @@ const Backpack: NextPage = () => {
             return <></>
 
         return (
-            <Grid xs={showFullWearableInfo ? 1.2 : .7}>
+            <Grid item xs={showFullWearableInfo ? 1.2 : .7}>
                 <a
                     onClick={() => {
                         sendUpdate(item);
                     }}>
                     <div
                         className={`${homeStyles.card} ${isCardSelected(item.definition.id) ? homeStyles.selected : ''}  ${wearablesStyles[item.definition.rarity]}  `}>
-                        <img alt={item.definition.name} width={'100%'} src={item.definition.thumbnail}/><br/>
+                        {/*<Image alt={item.definition.name} loader={customLoader}*/}
+                        {/*    // width={showFullWearableInfo? '150': '100'}*/}
+                        {/*    // height={showFullWearableInfo? '150': '100'}*/}
+                        {/*       fill*/}
+                        {/*       src={item.definition.thumbnail}/>*/}
 
+                        <img alt={item.definition.name} width={'100%'} src={item.definition.thumbnail}/>
 
                     </div>
                 </a>
@@ -105,7 +107,8 @@ const Backpack: NextPage = () => {
                     <div
                         className={`${homeStyles.cardLabel} ${isCardSelected(item.definition.id) ? homeStyles.selected : ''}`}>
                         <p>
-                            <a target={'_blank'} href={getMktLinkFromUrn(item.urn)}>{item.definition?.name}</a>
+                            <a target={'_blank'} rel="noreferrer noopener"
+                               href={getMktLinkFromUrn(item.urn)}>{item.definition?.name}</a>
                         </p>
                         <p>{item.definition.description}</p>
                         {/*<p>{item.definition.rarity}</p>*/}
@@ -115,16 +118,16 @@ const Backpack: NextPage = () => {
     }
 
     const sendUpdate = (item: LambdaWearable) => {
-        const iframe = document.getElementById("previewIframe") as HTMLIFrameElement;
+        //const iframe = document.getElementById("previewIframe") as HTMLIFrameElement;
 
+        //setCurrentlyWearing([...currentlyWearing, item.urn])
 
-        setPreviewUrns([item.urn, ...previewUrns])
-        setCurrentlyWearing([...currentlyWearing, item.urn])
+        updateCurrentlyWearing(item.definition?.data.category, item.urn, item.definition?.name, item.definition?.thumbnail, item.definition?.rarity)
 
         // if (iframe && iframe.contentWindow) {
         //     sendMessage(iframe.contentWindow, PreviewMessageType.UPDATE, {
         //         options: {
-        //             urns: [...previewUrns, item.urn]
+        //             urns: [...currentlyWearing, item.urn]
         //         }
         //         ,
         //     })
@@ -146,7 +149,8 @@ const Backpack: NextPage = () => {
 
     const createPopoverContent = (item: LambdaWearable) => {
         return (<>
-            <a target={'_blank'} href={getMktLinkFromUrn(item.urn)}>{item.definition?.name}</a><br/>
+            <a target={'_blank'} rel="noreferrer noopener"
+               href={getMktLinkFromUrn(item.urn)}>{item.definition?.name}</a><br/>
             {item.definition?.description} <br/>
             {/*{item.definition?.rarity} <br/>*/}
         </>)
@@ -189,7 +193,15 @@ const Backpack: NextPage = () => {
                 </Grid>
 
                 <Grid className={backpackStyles.sticky} xs={12}>
-                    {avatarAddress && <PreviewFrame avatarAddress={avatarAddress} height={'500px'}/>}
+                    <Stack>
+                        <Box>
+                            {avatarAddress && <PreviewFrame avatarAddress={avatarAddress} height={'500px'}/>}
+                        </Box>
+                        <Grid container xs={12}>
+                            <CurrentlyWearing cardSize={3}/>
+                        </Grid>
+
+                    </Stack>
                 </Grid>
             </Grid>
 

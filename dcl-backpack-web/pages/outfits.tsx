@@ -31,7 +31,7 @@ const Outfits: NextPage = () => {
                 {avatarAddress && <PreviewFrame avatarAddress={avatarAddress} height={'800px'}/>}
 
                 <div className={styles.grid}>
-                    <CurrentlyWearing/>
+                    <CurrentlyWearing cardSize={2}/>
                 </div>
 
             </Grid>
