@@ -102,7 +102,7 @@ const Backpack: NextPage = () => {
 
                     </div>
                 </a>
-                <a onMouseOver={(e) => handlePopoverOpen(e, item)}>+</a>
+                {/*<a onMouseOver={(e) => handlePopoverOpen(e, item)}>+</a>*/}
                 {showFullWearableInfo &&
                     <div
                         className={`${homeStyles.cardLabel} ${isCardSelected(item.definition.id) ? homeStyles.selected : ''}`}>

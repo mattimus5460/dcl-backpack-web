@@ -114,12 +114,29 @@
   margin: .25rem;
   text-align: center;
   text-decoration: none;
-  border: 1px solid #37333d;
-  border-radius: 2px;
+  border: 1px solid #18141a;
+  border-radius: .5em;
   padding: .2em;
-  background-color: #242129;
   font-size: .8em;
+  background-image: linear-gradient(360deg, #242129, #18141a);
 }
+
+
+.cardLabel p > a {
+  font-weight: bold;
+  font-size: 1.1em;
+  color: rgba(255, 255, 255, 0.53);
+}
+
+.cardLabel p > a:hover {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.cardLabel p {
+  font-size: 1.1em;
+  color: #575757;
+}
+
 
 
 @media (max-width: 600px) {
