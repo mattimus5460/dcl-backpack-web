@@ -15,10 +15,9 @@ const PreviewFrame: React.FC<PreviewFrameProps> = ({avatarAddress, height}) => {
         return urns.join('&urn=')
     }
 
-
     return (
         <iframe id="previewIframe" className={styles.previewIframe} width={'100%'} height={height}
-                src={`https://wearable-preview.decentraland.org/?profile=${avatarAddress}&background=18141a&urn=${explodeUrns(currentlyWearing)} `}/>
+                src={`https://wearable-preview.decentraland.org/?profile=${avatarAddress}&disableBackground&urn=${explodeUrns(currentlyWearing)} `}/>
     )
 }
 

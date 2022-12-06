@@ -42,3 +42,22 @@
 .popover a {
     font-weight: bold;
 }
+
+.removeButton:hover {
+    color: rgba(229, 51, 89, 0.8);
+    cursor: pointer;
+
+    background: linear-gradient(#18141a, rgba(75, 75, 75, 0.8));
+}
+
+.removeButton {
+    color: rgb(87, 87, 87);
+    padding: .5em;
+    background: linear-gradient(#18141a, rgba(75, 75, 75, 0.47));
+    width: 100%;
+    border-radius: .5em;
+}
+
+.categoryCounts {
+    color: darkgrey;
+}

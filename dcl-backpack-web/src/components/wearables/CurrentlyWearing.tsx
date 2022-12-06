@@ -41,7 +41,10 @@ const CurrentlyWearing: React.FC<CurrentlyWearingProps> = ({cardSize}) => {
     //     )
     // }
 
-    return <>{currentlyWearingItems}</>
+    return <>
+        {currentlyWearingItems}
+        {/*<div>Save Outfit</div>*/}
+    </>
 }
 
 interface WearableCardProps {

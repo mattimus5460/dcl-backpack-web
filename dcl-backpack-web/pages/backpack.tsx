@@ -4,7 +4,7 @@ import wearablesStyles from '../styles/Wearables.module.css'
 import backpackStyles from '../styles/Backpack.module.css'
 import {useEffect, useState} from "react";
 import {fetchAllPlayerWearables, getMktLinkFromUrn, LambdaWearable} from "./api/wearables/[...params]";
-import {Box, Checkbox, FormControlLabel, Grid, Popover, Stack, Typography} from "@mui/material";
+import {Box, Checkbox, FormControlLabel, Grid, Stack} from "@mui/material";
 import {useWeb3Context} from "../src/context/Web3Context";
 import PreviewFrame from "../src/components/wearables/PreviewFrame";
 import {useWearableContext} from "../src/context/WearableContext";
@@ -18,10 +18,12 @@ const Backpack: NextPage = () => {
     const [isLoading, setLoading] = useState(false)
     const [backpackAddress, setBackpackAddress] = useState<string | undefined>()
     const [showFullWearableInfo, setShowFullWearableInfo] = useState(false)
+    const [wearablesCount, setWearablesCount] = useState<number | null>()
+    const [filterText, setFilterText] = useState<string | undefined>()
 
     const {address: avatarAddress} = useWeb3Context()
 
-    const {currentlyWearing, updateCurrentlyWearing} = useWearableContext()
+    const {currentlyWearing, currentlyWearingMap, updateCurrentlyWearing, removeCategoryItem} = useWearableContext()
 
 
     useEffect(() => {
@@ -33,6 +35,7 @@ const Backpack: NextPage = () => {
                 if (!wearableResp)
                     return
 
+                let totalWearables = 0;
                 const wearablesByCategory = new Map()
                 wearableResp.forEach((wearable: any) => {
                     if (!wearable.definition) {
@@ -49,13 +52,15 @@ const Backpack: NextPage = () => {
                         wearablesByCategory.set(curCategory, [wearable])
                     else
                         wearablesByCategory.set(curCategory, [wearable, ...curForCategory])
+
+                    totalWearables++
                 })
 
+                setWearablesCount(totalWearables)
                 setDataSorted(wearablesByCategory)
                 setLoading(false)
             })
     }, [backpackAddress, avatarAddress])
-
 
 
     const getSections = (wearableData: Map<string, any>) => {
@@ -63,8 +68,11 @@ const Backpack: NextPage = () => {
         wearableData.forEach((items, category) => {
             allCategories.push((
                 <Grid sx={{borderBottom: '1px solid #242129', padding: '1em'}} container>
-                    <Grid xs={1}>
-                        <h3>{getNameForCategory(category)}</h3>
+                    <Grid xs={.8}>
+                        <h3>{getNameForCategory(category).toUpperCase()}</h3>
+                        <p className={backpackStyles.categoryCounts}>{items.length}</p>
+
+                        {getRemoveSectionItem(category)}
                     </Grid>
                     <Grid xs={11} container>
                         {items.map(getSectionItem)}
@@ -79,10 +87,39 @@ const Backpack: NextPage = () => {
         return currentlyWearing && currentlyWearing.includes(urn);
     }
 
+    const getRemoveSectionItem = (category: string) => {
+        const unremovableCategories = ["upper_body", "lower_body", "feet", "hair", "facial_hair", "eyes"]
+        if (unremovableCategories.includes(category) || !currentlyWearingMap.has(category))
+            return <></>
+
+        return (
+            <Grid item xs={showFullWearableInfo ? 1.2 : .7}>
+                <a
+                    onClick={() => {
+                        removeSectionItem(category);
+                    }}
+                    className={`${backpackStyles.removeButton}`}>
+                        Remove
+                        {/*<img alt={item.definition.name} width={'100%'} src={item.definition.thumbnail}/>*/}
+
+                </a>
+            </Grid>
+        )
+    }
+
+    const removeSectionItem = (category: string) => {
+        removeCategoryItem(category)
+    }
+
     const getSectionItem = (item: LambdaWearable) => {
 
         if (!item || !item.definition)
             return <></>
+
+        if (filterText
+            && (!item.definition.name.toLowerCase().includes(filterText.toLowerCase())
+                && !item.definition.description.toLowerCase().includes(filterText.toLowerCase())))
+            return
 
         return (
             <Grid item xs={showFullWearableInfo ? 1.2 : .7}>
@@ -119,7 +156,6 @@ const Backpack: NextPage = () => {
 
     const sendUpdate = (item: LambdaWearable) => {
         //const iframe = document.getElementById("previewIframe") as HTMLIFrameElement;
-
         //setCurrentlyWearing([...currentlyWearing, item.urn])
 
         updateCurrentlyWearing(item.definition?.data.category, item.urn, item.definition?.name, item.definition?.thumbnail, item.definition?.rarity)
@@ -137,7 +173,6 @@ const Backpack: NextPage = () => {
     function toggleShowFullWearableInfo() {
         setShowFullWearableInfo(!showFullWearableInfo)
     }
-
 
     const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
     const [popoverContent, setPopoverContent] = useState<JSX.Element | null>()
@@ -160,7 +195,7 @@ const Backpack: NextPage = () => {
         setAnchorEl(null);
     };
 
-    const open = Boolean(anchorEl);
+    //const open = Boolean(anchorEl);
 
     return (
         <Grid container xs={12}>
@@ -180,10 +215,27 @@ const Backpack: NextPage = () => {
                                    })}/>
                         </form>
                     </div>
+                    <div className={backpackStyles.description}>
+                        <form onSubmit={(e) => {
+                            e.preventDefault()
+                        }}>
+                            <label className={backpackStyles.addressLabel}>
+                                Search by Name
+                            </label>
+                            <input type="text" id={'filterInput'} className={backpackStyles.addressInput}
+                                   value={filterText}
+                                   onChange={(event => {
+                                       setFilterText(event.target.value)
+                                   })}/>
+                        </form>
+                    </div>
                 </Grid>
 
                 <Grid xs={12}>
                     <div className={backpackStyles.description}>
+
+                        Total Wearables: {wearablesCount}
+
                         <FormControlLabel
                             control={<Checkbox id={'showFullWearableInfoCheckbox'} color={'secondary'}
                                                checked={showFullWearableInfo} onChange={toggleShowFullWearableInfo}/>}
@@ -200,7 +252,6 @@ const Backpack: NextPage = () => {
                         <Grid container xs={12}>
                             <CurrentlyWearing cardSize={3}/>
                         </Grid>
-
                     </Stack>
                 </Grid>
             </Grid>
@@ -211,23 +262,23 @@ const Backpack: NextPage = () => {
                     return section
                 })}
 
-                <Popover
-                    id="mouse-over-popover"
-                    open={open}
-                    anchorEl={anchorEl}
-                    anchorOrigin={{
-                        vertical: 'bottom',
-                        horizontal: 'left',
-                    }}
-                    transformOrigin={{
-                        vertical: 'top',
-                        horizontal: 'left',
-                    }}
-                    onClose={handlePopoverClose}
-                >
-                    <Typography
-                        className={`${backpackStyles.popover}`} sx={{p: 1}}>{popoverContent}</Typography>
-                </Popover>
+                {/*<Popover*/}
+                {/*    id="mouse-over-popover"*/}
+                {/*    open={open}*/}
+                {/*    anchorEl={anchorEl}*/}
+                {/*    anchorOrigin={{*/}
+                {/*        vertical: 'bottom',*/}
+                {/*        horizontal: 'left',*/}
+                {/*    }}*/}
+                {/*    transformOrigin={{*/}
+                {/*        vertical: 'top',*/}
+                {/*        horizontal: 'left',*/}
+                {/*    }}*/}
+                {/*    onClose={handlePopoverClose}*/}
+                {/*>*/}
+                {/*    <Typography*/}
+                {/*        className={`${backpackStyles.popover}`} sx={{p: 1}}>{popoverContent}</Typography>*/}
+                {/*</Popover>*/}
             </Grid>
         </Grid>
     )

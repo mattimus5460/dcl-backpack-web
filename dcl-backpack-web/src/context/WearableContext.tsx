@@ -1,6 +1,6 @@
 import React, {createContext, ReactNode, useContext, useEffect, useState} from 'react'
 import {fetchPlayerDataProfileAvatar, getWearableInfo} from "../../pages/api/wearables/[...params]";
-import {Item} from "@dcl/schemas";
+import {Item, WearableId} from "@dcl/schemas";
 import {useWeb3Context} from "./Web3Context";
 
 const wearableInitialState: WearableProviderState = {
@@ -11,6 +11,8 @@ const wearableInitialState: WearableProviderState = {
     },
     updateCurrentlyWearing: () => {
     },
+    removeCategoryItem: () => {
+    },
     profile: {name: '', snapshot: ''}
 }
 
@@ -20,6 +22,7 @@ interface WearableProviderState {
     currentlyWearingMap: Map<string, CurrentlyWearingContextProps | undefined>
     setCurrentlyWearing: Function
     updateCurrentlyWearing: Function
+    removeCategoryItem: Function
     profile: AvatarProfile
 }
 
@@ -51,22 +54,15 @@ export const WearableContextProvider = ({children}: Props) => {
     const [profile, setProfile] = useState<AvatarProfile>({name: '', snapshot: ''})
 
     const updateCurrentlyWearing = (category: string, urn: string, name: string, thumbnail: string, rarity: string) => {
-
         const updatedMap = new Map(currentlyWearingMap.set(category, {category, name, thumbnail, rarity, urn}))
-
         setCurrentlyWearingMap(updatedMap)
+    }
 
-        let curUrns: string[] = []
-        console.log(updatedMap)
+    const removeCategoryItem = (category: string) => {
+        console.log("delete")
+        currentlyWearingMap.delete(category)
+        setCurrentlyWearingMap(new Map(currentlyWearingMap))
 
-        updatedMap.forEach((v) => {
-            if (!v) return
-            curUrns.push(v.urn)
-        })
-
-
-        console.log(curUrns)
-        setCurrentlyWearingUrns(curUrns)
     }
 
     useEffect(() => {
@@ -79,10 +75,56 @@ export const WearableContextProvider = ({children}: Props) => {
 
         fetchPlayerDataProfileAvatar(avatarAddress)
             .then((profile) => {
-                setCurrentlyWearingUrns(profile.avatar.wearables)
+
                 setProfile({snapshot: profile.avatar.snapshots.face256, name: profile.name})
+
+                const currentWearablesUrns:WearableId[] = profile.avatar.wearables;
+                if (!currentWearablesUrns)
+                    return
+
+                setCurrentlyWearingUrns(currentWearablesUrns)
+
+                const fetchWearableInfo: (urn: string) => Promise<cw> = async (urn: string) => {
+                    return {urn, item: await getWearableInfo(urn)}
+                }
+
+                const allWearables: Promise<cw>[] =
+                    currentWearablesUrns.map((urn) => {
+                        return fetchWearableInfo(urn)
+                    })
+
+                Promise.all(allWearables).then((data) => {
+                    setCurrentlyWearingMap(
+                        new Map(
+                            data.map(obj => {
+                                if (!obj || !obj.item || !obj.item.data.wearable)
+                                    return ['not-found', {name: '', category: '', thumbnail: '', rarity: '', urn: ''}]
+                                return [obj.item.data.wearable.category.toString(),
+                                    {
+                                        category: obj.item.data.wearable.category,
+                                        name: obj.item.name,
+                                        thumbnail: obj.item.thumbnail,
+                                        rarity: obj.item.rarity,
+                                        urn: obj.urn
+                                    }];
+                            })));
+                })
             })
     }, [avatarAddress])
+
+
+    useEffect(() => {
+        let curUrns: string[] = []
+        console.log(currentlyWearingMap)
+
+        currentlyWearingMap.forEach((v) => {
+            if (!v) return
+            curUrns.push(v.urn)
+        })
+
+        console.log(curUrns)
+        setCurrentlyWearingUrns(curUrns)
+    },[currentlyWearingMap])
 
 
     interface cw {
@@ -90,37 +132,6 @@ export const WearableContextProvider = ({children}: Props) => {
         item: Item | undefined
     }
 
-    useEffect(() => {
-
-        if (!currentlyWearingUrns)
-            return
-
-        const fetchWearableInfo: (urn: string) => Promise<cw> = async (urn: string) => {
-            return {urn, item: await getWearableInfo(urn)}
-        }
-
-        const allWearables: Promise<cw>[] =
-            currentlyWearingUrns.map((urn) => {
-                return fetchWearableInfo(urn)
-            })
-
-        Promise.all(allWearables).then((data) => {
-            setCurrentlyWearingMap(
-                new Map(
-                    data.map(obj => {
-                        if (!obj || !obj.item || !obj.item.data.wearable)
-                            return ['not-found', {name: '', category: '', thumbnail: '', rarity: '', urn: ''}]
-                        return [obj.item.data.wearable.category.toString(),
-                            {
-                                category: obj.item.data.wearable.category,
-                                name: obj.item.name,
-                                thumbnail: obj.item.thumbnail,
-                                rarity: obj.item.rarity,
-                                urn: obj.urn
-                            }];
-                    })));
-        })
-    }, [currentlyWearingUrns])
 
     return (
         <WearableContext.Provider value={{
@@ -129,6 +140,7 @@ export const WearableContextProvider = ({children}: Props) => {
             currentlyWearingMap,
             setCurrentlyWearing: setCurrentlyWearingUrns,
             updateCurrentlyWearing,
+            removeCategoryItem,
             profile
         }}>
             {children}
