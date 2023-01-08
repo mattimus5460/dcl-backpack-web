@@ -2,8 +2,10 @@ import styles from "../../../styles/Home.module.css";
 import {CurrentlyWearingContextProps, useWearableContext} from "../../context/WearableContext";
 import React, {ReactNode, useEffect, useState} from "react";
 import wearablesStyles from "../../../styles/Wearables.module.css";
-import {Grid} from "@mui/material";
+import {Button, Grid} from "@mui/material";
 import {getNameForCategory} from "../../utils/utils";
+import WearableCard, {getCardForItem} from "./WearableCard";
+import {useWeb3Context} from "../../context/Web3Context";
 
 export interface CurrentlyWearingProps {
     cardSize: number
@@ -12,68 +14,46 @@ export interface CurrentlyWearingProps {
 const CurrentlyWearing: React.FC<CurrentlyWearingProps> = ({cardSize}) => {
 
     const {currentlyWearingMap} = useWearableContext()
+    const {address: avatarAddress} = useWeb3Context()
     const [currentlyWearingItems, setCurrentlyWearingItems] = useState<ReactNode[]>([])
-
 
     useEffect(() => {
         let cwiList: ReactNode[] = []
         currentlyWearingMap.forEach((value, category) => {
             if (!value || category === 'not-found')
                 return
-            cwiList.push(getCardForItem(category, value))
+            cwiList.push(getCardForItem(category, value, cardSize))
         })
-
         setCurrentlyWearingItems(cwiList)
     }, [currentlyWearingMap])
 
-    const getCardForItem = (category: string, item: CurrentlyWearingContextProps) => {
-        return (
-            <WearableCard category={category}
-                          name={item.name} thumbnail={item.thumbnail} rarity={item.rarity}
-                          cardSize={cardSize}/>
-        )
-    }
+    async function saveCurrentlyWearing() {
+        console.log(JSON.stringify(Object.fromEntries(currentlyWearingMap)))
+        const response = await fetch("http://127.0.0.1:5001/dcl-closet/us-central1/api/addOutfit", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+                // 'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: JSON.stringify({
+                outfit: Object.fromEntries(currentlyWearingMap),
+                userId: avatarAddress
+            })
+        });
 
-    // const getImageComponents = () => {
-    //     return currentlyWearingData && currentlyWearingData.map((data) => (
-    //             data && <WearableCard name={data.name} thumbnail={data.thumbnail} rarity={data.rarity}/>
-    //         )
-    //     )
-    // }
+        console.log(response)
+        return response.json();
+    }
 
     return <>
         {currentlyWearingItems}
-        {/*<div>Save Outfit</div>*/}
+
+        <Grid xs={cardSize} textAlign={'center'}>
+            <Button onClick={saveCurrentlyWearing} className={`${styles.card} ${wearablesStyles["common"]}`}>
+                Save Outfit
+            </Button>
+        </Grid>
     </>
 }
-
-interface WearableCardProps {
-    category: string
-    name?: string
-    thumbnail: string
-    rarity: string
-    cardSize: number
-}
-
-const WearableCard: React.FC<WearableCardProps> = ({category, name, thumbnail, rarity, cardSize}) => {
-
-    return (
-        <Grid xs={cardSize} textAlign={'center'}>
-            {/*<Image alt={item.definition.name} loader={customLoader}*/}
-            {/*    // width={showFullWearableInfo? '150': '100'}*/}
-            {/*    // height={showFullWearableInfo? '150': '100'}*/}
-            {/*       fill*/}
-            {/*       src={item.definition.thumbnail}/><br/>*/}
-
-
-            {getNameForCategory(category)}
-
-            <div className={`${styles.card} ${wearablesStyles[rarity]}`}>
-                <img alt={name} width={'100%'} height={'100%'} src={thumbnail}/>
-            </div>
-        </Grid>
-    )
-}
-
 
 export default CurrentlyWearing

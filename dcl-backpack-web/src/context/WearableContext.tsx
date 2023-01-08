@@ -1,4 +1,4 @@
-import React, {createContext, ReactNode, useContext, useEffect, useState} from 'react'
+import React, {createContext, PropsWithChildren, useContext, useEffect, useState} from 'react'
 import {fetchPlayerDataProfileAvatar, getWearableInfo} from "../../pages/api/wearables/[...params]";
 import {Item, WearableId} from "@dcl/schemas";
 import {useWeb3Context} from "./Web3Context";
@@ -33,10 +33,6 @@ interface AvatarProfile {
 
 const WearableContext = createContext<WearableProviderState>(wearableInitialState)
 
-interface Props {
-    children: ReactNode
-}
-
 export interface CurrentlyWearingContextProps {
     category: string
     name: string
@@ -45,7 +41,11 @@ export interface CurrentlyWearingContextProps {
     urn: string
 }
 
-export const WearableContextProvider = ({children}: Props) => {
+export interface OutfitMap {
+    [category: string]: CurrentlyWearingContextProps
+}
+
+export const WearableContextProvider = ({children}: PropsWithChildren) => {
     const {address: avatarAddress} = useWeb3Context()
 
     const [currentlyWearingUrns, setCurrentlyWearingUrns] = useState<string[]>([])
@@ -78,7 +78,7 @@ export const WearableContextProvider = ({children}: Props) => {
 
                 setProfile({snapshot: profile.avatar.snapshots.face256, name: profile.name})
 
-                const currentWearablesUrns:WearableId[] = profile.avatar.wearables;
+                const currentWearablesUrns: WearableId[] = profile.avatar.wearables;
                 if (!currentWearablesUrns)
                     return
 
@@ -115,7 +115,6 @@ export const WearableContextProvider = ({children}: Props) => {
 
     useEffect(() => {
         let curUrns: string[] = []
-        console.log(currentlyWearingMap)
 
         currentlyWearingMap.forEach((v) => {
             if (!v) return
@@ -124,7 +123,7 @@ export const WearableContextProvider = ({children}: Props) => {
 
         console.log(curUrns)
         setCurrentlyWearingUrns(curUrns)
-    },[currentlyWearingMap])
+    }, [currentlyWearingMap])
 
 
     interface cw {
@@ -138,7 +137,7 @@ export const WearableContextProvider = ({children}: Props) => {
             currentlyWearing: currentlyWearingUrns,
             currentlyWearingData,
             currentlyWearingMap,
-            setCurrentlyWearing: setCurrentlyWearingUrns,
+            setCurrentlyWearing: setCurrentlyWearingMap,
             updateCurrentlyWearing,
             removeCategoryItem,
             profile

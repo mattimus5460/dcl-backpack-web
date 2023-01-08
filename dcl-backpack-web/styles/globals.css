@@ -4,7 +4,7 @@ body {
   margin: 0;
   font-family: system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
   color: #fff;
-  background: #18141a;
+  background: linear-gradient(#18141a, rgb(17, 12, 17));
 }
 
 a {

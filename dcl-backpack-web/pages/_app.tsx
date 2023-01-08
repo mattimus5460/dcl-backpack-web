@@ -34,7 +34,8 @@ function ClosetApp({Component, pageProps}: AppProps) {
                             <Grid container xs={2}>
                                 <Grid container xs={10}>
                                     <Grid container xs={2}>
-                                        <img alt={'Decentraland Logo'} className={nav_styles.logo} width={'48px'} height={'48px'}
+                                        <img alt={'Decentraland Logo'} className={nav_styles.logo} width={'48px'}
+                                             height={'48px'}
                                              src="/icon-48x48.png"/>
                                     </Grid>
                                     <Grid className={nav_styles.logo_name} container xs={6}>
@@ -45,7 +46,7 @@ function ClosetApp({Component, pageProps}: AppProps) {
                                 </Grid>
 
                             </Grid>
-                            <Grid container  justifyContent={'right'}  xs={2}>
+                            <Grid container justifyContent={'right'} xs={2}>
                                 <NavbarWalletConnect/>
                             </Grid>
                         </Grid>
