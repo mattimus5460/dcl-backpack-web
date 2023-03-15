@@ -25,7 +25,7 @@ const Outfits: NextPage = () => {
         if (!avatarAddress) return
 
         // Retrieve all outfits
-        const response = fetch(`http://127.0.0.1:5001/dcl-closet/us-central1/api/outfits/${avatarAddress}`, {
+        const response = fetch(`https://us-central1-dcl-closet.cloudfunctions.net/api/outfits/${avatarAddress}`, {
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -56,7 +56,7 @@ const Outfits: NextPage = () => {
                 {avatarAddress && <PreviewFrame avatarAddress={avatarAddress} height={'800px'}/>}
 
                 <div className={styles.grid}>
-                    <CurrentlyWearing cardSize={2}/>
+                    <CurrentlyWearing cardSize={2} showUpdate={true}/>
                 </div>
             </Grid>
             <Grid item xs={1}>

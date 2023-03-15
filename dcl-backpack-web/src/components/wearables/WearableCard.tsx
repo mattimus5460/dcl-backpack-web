@@ -23,7 +23,9 @@ const WearableCard: React.FC<WearableCardProps> = ({category, name, thumbnail, r
             {/*       src={item.definition.thumbnail}/><br/>*/}
 
 
-            {getNameForCategory(category)}
+            <div hidden={true} className={`${wearablesStyles.cardCategory}}`}>
+             {getNameForCategory(category).toUpperCase()}
+            </div>
 
             <div className={`${styles.card} ${wearablesStyles[rarity]}`}>
                 <img alt={name} width={'100%'} height={'100%'} src={thumbnail}/>

@@ -1,5 +1,12 @@
 import {NextApiRequest, NextApiResponse} from "next";
-import {Item, NFT, Wearable, WearableRepresentation} from '@dcl/schemas'
+import {
+    AvatarInfo,
+    Item,
+    NFT,
+    Wearable,
+    WearableRepresentation,
+} from "@dcl/schemas";
+import {Avatar} from "@dcl/schemas/dist/platform/profile/avatar";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const {params} = req.query
@@ -42,7 +49,29 @@ export async function fetchPlayerDataProfileAvatar(userId: string | string[]) {
         let json = await response.json()
 
         console.log("player avatar:", json.avatars[0])
-        return json.avatars[0]
+        return {avatar: json.avatars[0], snapshots: json.avatars[0].snapshots}
+    } catch {
+        console.log("an error occurred while reaching for player data")
+    }
+}
+
+export async function fetchPlayerDataProfileAvatar2(userId: string | string[]) {
+    //const userData = await getUserData()
+    //const playerRealm = await getCurrentRealm()
+
+    let url = `https://peer.decentraland.org/lambdas/profile/${userId}`.toString()
+
+    try {
+        let response = await fetch(url,
+            {
+                headers: {
+                    'Cache-Control': 'no-cache'
+                }
+            })
+        let json = await response.json()
+
+        console.log("player avatar:", json.avatars[0])
+        return {avatar: {...json.avatars[0]}, snapshots: json.avatars[0].avatar.snapshots, name: json.avatars[0].name}
     } catch {
         console.log("an error occurred while reaching for player data")
     }

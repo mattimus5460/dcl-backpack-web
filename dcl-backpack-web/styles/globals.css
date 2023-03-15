@@ -4,7 +4,7 @@ body {
   margin: 0;
   font-family: system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
   color: #fff;
-  background: linear-gradient(#18141a, rgb(17, 12, 17));
+  background: radial-gradient(circle, rgba(33,30,37,1) 0%, rgba(24,20,26,1) 100%);
 }
 
 a {
@@ -16,3 +16,6 @@ a {
   box-sizing: border-box;
 }
 
+:root {
+  --low-transparency: .8;
+}

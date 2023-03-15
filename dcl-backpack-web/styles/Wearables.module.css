@@ -1,52 +1,112 @@
-.rare {
-    background-image: linear-gradient(rgb(54, 207, 117, .25), #18141a);
+
+.cardCategory{
+    font-size: .15em;
 }
+
+/*.rare {*/
+/*    background-image: linear-gradient(rgb(54, 207, 117, .25), #18141a);*/
+/*}*/
+
+/*.rare:hover {*/
+/*    background-image: linear-gradient(rgb(54, 207, 117, .5), #18141a);*/
+/*}*/
+
+/*.legendary {*/
+/*    background-image: linear-gradient(rgb(132, 45, 218, .25), #18141a);*/
+/*}*/
+
+/*.legendary:hover {*/
+/*    background-image: linear-gradient(rgb(132, 45, 218, .5), #18141a);*/
+/*}*/
+
+/*.mythic {*/
+/*    background-image: linear-gradient(rgb(255, 99, 225, .25), #18141a);*/
+/*}*/
+
+/*.mythic:hover {*/
+/*    background-image: linear-gradient(rgb(255, 99, 225, .5), #18141a);*/
+/*}*/
+
+/*.epic {*/
+/*    background-image: linear-gradient(rgb(61, 133, 230, .25), #18141a);*/
+/*}*/
+
+/*.epic:hover {*/
+/*    background-image: linear-gradient(rgb(61, 133, 230, .5), #18141a);*/
+/*}*/
+
+/*.uncommon {*/
+/*    background-image: linear-gradient(rgb(237, 109, 79, .25), #18141a);*/
+/*}*/
+/*.uncommon:hover {*/
+/*    background-image: linear-gradient(rgb(237, 109, 79, .5), #18141a);*/
+/*}*/
+
+/*.unique {*/
+/*    background-image: linear-gradient(rgb(255, 182, 38, .25), #18141a);*/
+/*}*/
+/*.unique:hover {*/
+/*    background-image: linear-gradient(rgb(255, 182, 38, .5), #18141a);*/
+/*}*/
+
+/*.common {*/
+/*    background-image: linear-gradient(rgb(171, 193, 193, .25), #18141a);*/
+/*}*/
+/*.common:hover {*/
+/*    background-image: linear-gradient(rgb(171, 193, 193, .5), #18141a);*/
+/*}*/
+
+
 
 .rare:hover {
-    background-image: linear-gradient(rgb(54, 207, 117, .5), #18141a);
+    background-image: radial-gradient(rgb(58, 214, 130, var(--low-transparency)), rgb(54, 207, 117, var(--low-transparency)));
 }
 
-.legendary {
-    background-image: linear-gradient(rgb(132, 45, 218, .25), #18141a);
+.rare {
+    background-image: radial-gradient(rgb(58, 214, 130), rgb(54, 207, 117));
 }
 
 .legendary:hover {
-    background-image: linear-gradient(rgb(132, 45, 218, .5), #18141a);
+    background-image: radial-gradient(rgb(166, 87, 237, var(--low-transparency)), rgb(132, 45, 218, var(--low-transparency)));
 }
 
-.mythic {
-    background-image: linear-gradient(rgb(255, 99, 225, .25), #18141a);
+.legendary {
+    background-image: radial-gradient(rgb(166, 87, 237), rgb(132, 45, 218));
 }
 
 .mythic:hover {
-    background-image: linear-gradient(rgb(255, 99, 225, .5), #18141a);
+    background-image: radial-gradient(rgb(251, 125, 227, var(--low-transparency)), rgb(255, 99, 225, var(--low-transparency)));
 }
 
-.epic {
-    background-image: linear-gradient(rgb(61, 133, 230, .25), #18141a);
+.mythic {
+    background-image: radial-gradient(rgb(251, 125, 227), rgb(255, 99, 225));
 }
 
 .epic:hover {
-    background-image: linear-gradient(rgb(61, 133, 230, .5), #18141a);
+    background-image: radial-gradient(rgb(99, 151, 242, var(--low-transparency)), rgb(61, 133, 230, var(--low-transparency)));
 }
 
-.uncommon {
-    background-image: linear-gradient(rgb(237, 109, 79, .25), #18141a);
+.epic {
+    background-image: radial-gradient(rgb(99, 151, 242), rgb(61, 133, 230));
 }
+
 .uncommon:hover {
-    background-image: linear-gradient(rgb(237, 109, 79, .5), #18141a);
+    background-image: radial-gradient(rgb(255, 133, 99, var(--low-transparency)), rgb(237, 109, 79, var(--low-transparency)));
+}
+.uncommon {
+    background-image: radial-gradient(rgb(255, 133, 99), rgb(237, 109, 79));
 }
 
-.unique {
-    background-image: linear-gradient(rgb(255, 182, 38, .25), #18141a);
-}
 .unique:hover {
-    background-image: linear-gradient(rgb(255, 182, 38, .5), #18141a);
+    background-image: radial-gradient(rgb(255, 230, 23, var(--low-transparency)), rgb(255, 182, 38, var(--low-transparency)));
+}
+.unique {
+    background-image: radial-gradient(rgb(255, 230, 23), rgb(255, 182, 38));
 }
 
-.common {
-    background-image: linear-gradient(rgb(171, 193, 193, .25), #18141a);
-}
 .common:hover {
-    background-image: linear-gradient(rgb(171, 193, 193, .5), #18141a);
+    background-image: radial-gradient(rgb(212, 224, 224, var(--low-transparency)), rgb(171, 193, 193, var(--low-transparency)));
+}
+.common {
+    background-image: radial-gradient(rgb(212, 224, 224), rgb(171, 193, 193));
 }

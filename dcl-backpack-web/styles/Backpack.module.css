@@ -8,7 +8,6 @@
 .addressInput {
     padding: 1em;
     border-radius: .6em;
-    border: none;
     width: 100%;
     background-color:#242129 ;
 }
@@ -46,16 +45,17 @@
 .removeButton:hover {
     color: rgba(229, 51, 89, 0.8);
     cursor: pointer;
+    background: radial-gradient(circle, rgba(24,20,26,1) 0%, rgb(51, 46, 56) 100%);
 
-    background: linear-gradient(#18141a, rgba(75, 75, 75, 0.8));
 }
 
 .removeButton {
+    cursor: pointer;
     color: rgb(87, 87, 87);
-    padding: .5em;
-    background: linear-gradient(#18141a, rgba(75, 75, 75, 0.47));
-    width: 100%;
-    border-radius: .5em;
+    padding: .5em .25em 0 .25em;
+    background: #18141a;
+    border-radius: .25em;
+    background: radial-gradient(circle, rgba(33,30,37,1) 0%, rgba(24,20,26,1) 100%);
 }
 
 .categoryCounts {

@@ -10,12 +10,14 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@dcl/crypto": "^3.3.1",
     "@dcl/schemas": "^5.4.2",
     "@emotion/react": "^11.10.0",
     "@emotion/styled": "^11.10.0",
     "@mui/icons-material": "^5.10.6",
     "@mui/material": "^5.9.2",
     "@walletconnect/web3-provider": "^1.8.0",
+    "dcl-catalyst-client": "^14.0.9",
     "ethers": "^5.7.0",
     "next": "13.0.0",
     "react": "18.2.0",

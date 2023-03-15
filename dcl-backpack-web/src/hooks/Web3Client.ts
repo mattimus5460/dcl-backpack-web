@@ -1,5 +1,14 @@
-import Web3Modal from 'web3modal'
-import WalletConnectProvider from '@walletconnect/web3-provider'
+import Web3Modal from "web3modal";
+import WalletConnectProvider from "@walletconnect/web3-provider";
+import {useCallback, useEffect, useReducer} from "react";
+import {ethers} from "ethers";
+
+import {
+    Web3Action,
+    web3InitialState,
+    Web3ProviderState,
+    web3Reducer,
+} from "../reducers";
 
 const providerOptions = {
     walletconnect: {
@@ -19,16 +28,6 @@ if (typeof window !== 'undefined') {
     })
 }
 
-
-import { useEffect, useReducer, useCallback } from 'react'
-import { ethers } from 'ethers'
-
-import {
-    Web3ProviderState,
-    Web3Action,
-    web3InitialState,
-    web3Reducer,
-} from '../reducers'
 
 // Web3Modal code goes here
 

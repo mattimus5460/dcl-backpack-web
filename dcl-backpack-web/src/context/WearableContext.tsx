@@ -1,7 +1,13 @@
 import React, {createContext, PropsWithChildren, useContext, useEffect, useState} from 'react'
-import {fetchPlayerDataProfileAvatar, getWearableInfo} from "../../pages/api/wearables/[...params]";
+import {
+    fetchPlayerDataProfileAvatar,
+    fetchPlayerDataProfileAvatar2,
+    getWearableInfo,
+} from "../../pages/api/wearables/[...params]";
 import {Item, WearableId} from "@dcl/schemas";
 import {useWeb3Context} from "./Web3Context";
+import {Avatar, Snapshots} from "@dcl/schemas/dist/schemas";
+import {Color3} from "@dcl/schemas/dist/misc";
 
 const wearableInitialState: WearableProviderState = {
     currentlyWearing: [],
@@ -13,7 +19,7 @@ const wearableInitialState: WearableProviderState = {
     },
     removeCategoryItem: () => {
     },
-    profile: {name: '', snapshot: ''}
+    profile: {name:''}
 }
 
 interface WearableProviderState {
@@ -28,7 +34,8 @@ interface WearableProviderState {
 
 interface AvatarProfile {
     name: string
-    snapshot: string
+    snapshots?: Snapshots
+    avatar?: Avatar
 }
 
 const WearableContext = createContext<WearableProviderState>(wearableInitialState)
@@ -51,7 +58,7 @@ export const WearableContextProvider = ({children}: PropsWithChildren) => {
     const [currentlyWearingUrns, setCurrentlyWearingUrns] = useState<string[]>([])
     const [currentlyWearingData, setCurrentlyWearingData] = useState<Item[]>([])
     const [currentlyWearingMap, setCurrentlyWearingMap] = useState<Map<string, CurrentlyWearingContextProps | undefined>>(new Map())
-    const [profile, setProfile] = useState<AvatarProfile>({name: '', snapshot: ''})
+    const [profile, setProfile] = useState<AvatarProfile>({name:''})
 
     const updateCurrentlyWearing = (category: string, urn: string, name: string, thumbnail: string, rarity: string) => {
         const updatedMap = new Map(currentlyWearingMap.set(category, {category, name, thumbnail, rarity, urn}))
@@ -67,18 +74,24 @@ export const WearableContextProvider = ({children}: PropsWithChildren) => {
 
     useEffect(() => {
         if (!avatarAddress) {
-            setProfile({name: '', snapshot: ''})
+            setProfile({name:''})
             setCurrentlyWearingUrns([])
             setCurrentlyWearingData([])
             return
         }
 
-        fetchPlayerDataProfileAvatar(avatarAddress)
+        fetchPlayerDataProfileAvatar2(avatarAddress)
             .then((profile) => {
 
-                setProfile({snapshot: profile.avatar.snapshots.face256, name: profile.name})
+                console.log(profile)
+                if(!profile)
+                    return;
 
-                const currentWearablesUrns: WearableId[] = profile.avatar.wearables;
+                setProfile(profile)
+                console.log(profile)
+
+                const currentWearablesUrns: WearableId[] = profile.avatar.avatar.wearables;
+                console.log("cwurn" +currentWearablesUrns)
                 if (!currentWearablesUrns)
                     return
 
