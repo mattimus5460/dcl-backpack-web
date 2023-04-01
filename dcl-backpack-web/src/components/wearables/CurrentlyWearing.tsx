@@ -1,15 +1,11 @@
 import styles from "../../../styles/Home.module.css";
-import {
-	CurrentlyWearingContextProps,
-	useWearableContext,
-} from "../../context/WearableContext";
+import {useWearableContext} from "../../context/WearableContext";
 import React, {ReactNode, useEffect, useState} from "react";
 import wearablesStyles from "../../../styles/Wearables.module.css";
 import {Button, Grid} from "@mui/material";
-import {getNameForCategory} from "../../utils/utils";
-import WearableCard, {getCardForItem} from "./WearableCard";
+import {getCardForItem} from "./WearableCard";
 import {useWeb3Context} from "../../context/Web3Context";
-import {Save, CloudUpload} from "@mui/icons-material";
+import {CloudUpload, Save} from "@mui/icons-material";
 import {Entity, EntityType} from "@dcl/schemas/dist/platform/entity";
 import {Profile} from "@dcl/schemas";
 import {EntitiesOperator, getHashesByKeyMap} from "../../utils/entities";
@@ -19,7 +15,8 @@ export interface CurrentlyWearingProps {
 	showSave?: boolean;
 	showUpdate?: boolean;
 }
-export type ProfileEntity = Omit<Entity, 'metadata'> & {
+
+export type ProfileEntity = Omit<Entity, "metadata"> & {
 	metadata: Profile
 }
 
@@ -27,10 +24,14 @@ export type ProfileEntity = Omit<Entity, 'metadata'> & {
 const CurrentlyWearing: React.FC<CurrentlyWearingProps> = ({
 	cardSize,
 	showSave = false,
-	showUpdate = false
+	showUpdate = false,
 }) => {
 
-	const {currentlyWearingMap, profile, currentlyWearing} = useWearableContext();
+	const {
+		currentlyWearingMap,
+		profile,
+		currentlyWearing,
+	} = useWearableContext();
 	const {address: avatarAddress, web3Provider} = useWeb3Context();
 	const [currentlyWearingItems, setCurrentlyWearingItems] = useState<ReactNode[]>([]);
 
@@ -67,22 +68,23 @@ const CurrentlyWearing: React.FC<CurrentlyWearingProps> = ({
 
 		//console.log("ppp "+JSON.stringify(profile))
 
-		if(!web3Provider || !avatarAddress || !profile.snapshots || !profile.avatar)
-			return
-
-		const URL = 'https://peer-testing.decentraland.org' //'https://peer-eu1.decentraland.org' //'https://peer-testing.decentraland.org' //'http://localhost:8000/api'
-		const entitiesOperator = new EntitiesOperator(URL, web3Provider)
-
-		const hbkm = getHashesByKeyMap(profile.snapshots)
-
-		const removeUrlFromSnapshot = (snap:string) =>{
-			const split = snap.split("/")
-			return split[split.length -1]
+		if (!web3Provider || !avatarAddress || !profile.snapshots || !profile.avatar) {
+			return;
 		}
-		console.log("hbkm1 "+JSON.stringify(hbkm.keys()))
+
+		const URL = "https://peer-testing.decentraland.org"; //'https://peer-eu1.decentraland.org' //'https://peer-testing.decentraland.org' //'http://localhost:8000/api'
+		const entitiesOperator = new EntitiesOperator(URL, web3Provider);
+
+		const hbkm = getHashesByKeyMap(profile.snapshots);
+
+		const removeUrlFromSnapshot = (snap: string) => {
+			const split = snap.split("/");
+			return split[split.length - 1];
+		};
+		console.log("hbkm1 " + JSON.stringify(hbkm.keys()));
 
 		const metadata = {
-			avatars:[
+			avatars: [
 				{
 					name: profile.avatar.name,
 					description: profile.avatar.description,
@@ -96,22 +98,23 @@ const CurrentlyWearing: React.FC<CurrentlyWearingProps> = ({
 							eyes: profile.avatar.avatar.eyes,
 							hair: profile.avatar.avatar.hair,
 							skin: profile.avatar.avatar.skin,
-							wearables: currentlyWearing.filter(w => w!=""),
+							wearables: currentlyWearing.filter(w => w != ""),
 							snapshots: {
 								body: removeUrlFromSnapshot(profile.snapshots.body),
-								face256: removeUrlFromSnapshot(profile.snapshots.face256)
-							}
-						}
-				}]
-		}
+								face256: removeUrlFromSnapshot(profile.snapshots.face256),
+							},
+							emotes: profile.avatar.avatar.emotes,
+						},
+				}],
+		};
 
 		await entitiesOperator.deployEntityWithoutNewFiles(
 			metadata,
 			hbkm,
 			EntityType.PROFILE,
 			avatarAddress,
-			avatarAddress
-		)
+			avatarAddress,
+		);
 
 	}
 

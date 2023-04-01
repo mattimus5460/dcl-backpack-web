@@ -52,7 +52,7 @@ const ChipRarity = styled(Chip)({
 	backgroundColor: "#37333d",
 	margin: ".25em",
 	color: "#aaa",
-	border: "1px solid 242129"
+	border: "1px solid 242129",
 });
 
 const AccordionStyled = styled(Accordion)({
@@ -87,7 +87,7 @@ const Backpack: NextPage = () => {
 			const {pathname, query} = router;
 			router.replace({pathname}, undefined, {shallow: true});
 		}
-	},[router]);
+	}, [router]);
 
 	useEffect(() => {
 		setLoading(true);
@@ -158,8 +158,9 @@ const Backpack: NextPage = () => {
 			return false;
 		}
 
-		if (!filteredRarities || filteredRarities.size < 1)
-			return true
+		if (!filteredRarities || filteredRarities.size < 1) {
+			return true;
+		}
 
 		if (filteredRarities.has(item.definition.rarity.toUpperCase())) {
 			return true;
@@ -171,6 +172,11 @@ const Backpack: NextPage = () => {
 	const getSections = (wearableData: Map<string, LambdaWearable[]>) => {
 		const allCategories: JSX.Element[] = [];
 		wearableData.forEach((items, category) => {
+
+			if (filteredCategories.size > 0 && !filteredCategories.has(category)) {
+				return;
+			}
+
 			allCategories.push((
 				<Grid sx={{
 					borderBottom: "1px solid #242129", padding: "1em",
@@ -351,9 +357,22 @@ const Backpack: NextPage = () => {
 						<AccordionDetails>
 							{
 								Array.from(availableCategories).map((category) => {
+
+									const isSelected = filteredCategories.has(category);
+
 									return <ChipRarity
 										key={category}
-										label={getNameForCategory(category)}/>;
+										label={getNameForCategory(category)}
+										variant={isSelected ? "outlined" : "filled"}
+										onClick={(e) => {
+											if (isSelected) {
+												filteredCategories.delete(category);
+												setFilteredCategories(new Set(filteredCategories));
+											} else {
+												filteredCategories.add(category);
+												setFilteredCategories(new Set(filteredCategories));
+											}
+										}}/>;
 								})
 							}
 						</AccordionDetails>
@@ -417,7 +436,8 @@ const Backpack: NextPage = () => {
                                             height={"500px"}/>}
 						</Box>
 						<Grid container xs={12}>
-							<CurrentlyWearing cardSize={2} showSave={true}/>
+							<CurrentlyWearing cardSize={2}
+											  showSave={!backpackAddress || avatarAddress == backpackAddress}/>
 						</Grid>
 					</Stack>
 				</Grid>

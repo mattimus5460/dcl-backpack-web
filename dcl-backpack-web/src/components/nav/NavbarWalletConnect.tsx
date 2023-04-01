@@ -13,8 +13,8 @@ function NavbarWalletConnect() {
                 <Web3Button/>
             </Grid>
             <Grid xs={2}>
-                {profile.snapshot ?
-                    <Avatar className={styles.profileImage} alt={profile.name} src={profile.snapshot}/>
+                {profile.snapshots ?
+                    <Avatar className={styles.profileImage} alt={profile.name} src={profile.snapshots.face256}/>
                     :
                     <></>}
             </Grid>

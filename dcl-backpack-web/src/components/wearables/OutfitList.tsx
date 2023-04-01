@@ -1,10 +1,9 @@
 import {OutfitMap} from "../../context/WearableContext";
 import React from "react";
 import {getCardForItem} from "./WearableCard";
-import {Button, Grid} from "@mui/material";
-import styles from "../../../styles/Home.module.css";
-import wearablesStyles from "../../../styles/Wearables.module.css";
+import {Grid} from "@mui/material";
 import backpackStyles from "../../../styles/Backpack.module.css";
+import RepeatIcon from "@mui/icons-material/Repeat";
 
 interface OutfitListProps {
     outfitList: OutfitMap[],
@@ -22,7 +21,7 @@ const OutfitList: React.FC<OutfitListProps> = ({outfitList, setCurrentlyWearing}
             allCards.push(getCardForItem(key, value, .75))
         }
         return (<>
-            <Grid container xs={12}>
+            <Grid container className={`${backpackStyles.outfitRow}`} xs={12}>
                 {/*<Grid xs={1} onClick={() => {*/}
                 {/*    setCurrentlyWearing(new Map(Object.entries(outfit)))*/}
                 {/*}}>*/}
@@ -31,25 +30,31 @@ const OutfitList: React.FC<OutfitListProps> = ({outfitList, setCurrentlyWearing}
 
                 {/*    </div>*/}
                 {/*</Grid>*/}
+
+
+                <Grid container xs={.75}>
+                    <a
+                        onClick={() => {
+                            setCurrentlyWearing(new Map(Object.entries(outfit)))
+                        }}
+                        className={`${backpackStyles.setOutfitButton}`}>
+                        Change Outfit<br />
+                        <RepeatIcon />
+                        {/*<img alt={item.definition.name} width={'100%'} src={item.definition.thumbnail}/>*/}
+
+                    </a>
+                </Grid>
+
+
                 {allCards}
             </Grid>
-            <Grid container xs={2}>
-                <a
-                    onClick={() => {
-                        setCurrentlyWearing(new Map(Object.entries(outfit)))
-                    }}
-                    className={`${backpackStyles.removeButton}`}>
-                    Set Outfit
-                    {/*<img alt={item.definition.name} width={'100%'} src={item.definition.thumbnail}/>*/}
 
-                </a>
-            </Grid>
             </>
         )
     }
 
     return <>
-        {outfitList.map(createOutfit)}
+        {outfitList.length > 0 ? outfitList.map(createOutfit) : <div>Loading...</div>}
     </>
 }
 

@@ -61,3 +61,26 @@
 .categoryCounts {
     color: darkgrey;
 }
+
+
+
+.setOutfitButton:hover {
+    color: rgba(229, 51, 89, 0.8);
+    cursor: pointer;
+    background: radial-gradient(circle, rgba(24,20,26,1) 0%, rgb(51, 46, 56) 100%);
+
+}
+
+.setOutfitButton {
+    cursor: pointer;
+    color: rgb(87, 87, 87);
+    padding: .5em;
+    background: #18141a;
+    border-radius: .25em;
+    background: radial-gradient(circle, rgba(33,30,37,1) 0%, rgba(24,20,26,1) 100%);
+}
+
+
+.outfitRow {
+    margin-bottom: 1em;
+}
