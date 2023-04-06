@@ -8,7 +8,7 @@ export interface PreviewFrameProps {
 	height: string;
 }
 
-const PreviewFrame: React.FC<PreviewFrameProps> = ({avatarAddress, height}) => {
+const PreviewFrame: React.FC<PreviewFrameProps> = ({height}) => {
 
 	const {currentlyWearing, profile} = useWearableContext();
 	const [hairColor, setHairColor] = useState("");
@@ -30,7 +30,7 @@ const PreviewFrame: React.FC<PreviewFrameProps> = ({avatarAddress, height}) => {
 
 	function colorToHex(color: Color3 | undefined) {
 		if (!color) return;
-		return rgbToHex(Math.floor(color.r * 256), Math.floor(color.g * 256), Math.floor(color.b * 256));
+		return rgbToHex(Math.floor(color.r * 255), Math.floor(color.g * 255), Math.floor(color.b * 255));
 	}
 
 	useEffect(() => {
