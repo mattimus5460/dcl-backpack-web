@@ -68,7 +68,7 @@ export class EntitiesOperator {
 		const personal = eth.getSigner()
 		const signature = await personal.signMessage(entityId)
 
-		return Authenticator.createSimpleAuthChain(entityId, address, signature)
+		return Authenticator.createSimpleAuthChain(entityId, address.toLowerCase(), signature)
 	}
 
 	/**
