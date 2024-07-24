@@ -16,7 +16,7 @@ const PreviewFrame: React.FC<PreviewFrameProps> = ({height}) => {
 	const [bodyShape, setBodyShape] = useState("");
 
 	const explodeUrns = (urns: string[]) => {
-		return urns.join("&urn=");
+		return urns.filter(urn=>urn != '').join("&urn=");
 	};
 
 	function componentToHex(c: number) {

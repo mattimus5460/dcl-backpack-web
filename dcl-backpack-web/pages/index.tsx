@@ -15,7 +15,7 @@ const Home: NextPage = () => {
             </Grid>
 
             <Grid justifyContent={'center'} container xs={4}>
-                <CurrentlyWearing cardSize={3}/>
+                <CurrentlyWearing cardSize={2}/>
             </Grid>
         </Grid>
     )

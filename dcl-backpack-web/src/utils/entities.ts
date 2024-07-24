@@ -1,13 +1,17 @@
-import { ethers } from 'ethers'
-import { Authenticator, AuthChain } from '@dcl/crypto'
+import {BrowserProvider, ethers} from "ethers";
+import { Authenticator, AuthChain  } from '@dcl/crypto'
 import { Entity, EntityType } from '@dcl/schemas/dist/platform/entity'
-import { CatalystClient } from 'dcl-catalyst-client/dist/CatalystClient'
-import { BuildEntityWithoutFilesOptions } from 'dcl-catalyst-client/dist/ContentClient'
+//import { CatalystClient } from 'dcl-catalyst-client/dist/CatalystClient'
+//import { BuildEntityWithoutFilesOptions } from 'dcl-catalyst-client/dist/ContentClient'
 
 //import { PeerAPI } from './peer'
-import {Web3Provider} from "@ethersproject/providers/src.ts/web3-provider";
 import {Avatar, Profile} from "@dcl/schemas";
 import {Snapshots} from "@dcl/schemas/dist/platform/profile/avatar";
+import {createFetchComponent} from "@well-known-components/fetch-component";
+import {createCatalystClient, DeploymentBuilder} from "dcl-catalyst-client";
+import {
+	BuildEntityWithoutFilesOptions
+} from "dcl-catalyst-client/dist/client/types";
 
 export const getHashesByKeyMap = (snapshots: Snapshots) => {
 
@@ -34,19 +38,25 @@ const removeUrlFromSnapshot = (snap:string) =>{
 
 
 export class EntitiesOperator {
-	private readonly catalystClient: CatalystClient
-	// this is a temporal work-around to fix profile deployment issues on catalysts with Garbage Collector
-	private readonly catalystClientWithoutGbCollector: CatalystClient | null
-	//private readonly peerAPI: PeerAPI
-	private readonly provider: Web3Provider
 
-	constructor(peerUrl: string, provider: Web3Provider, peerWithNoGbCollectorUrl?: string, ) {
-		this.catalystClient = new CatalystClient({ catalystUrl: peerUrl })
-		this.catalystClientWithoutGbCollector = peerWithNoGbCollectorUrl
-			? new CatalystClient({
-				catalystUrl: peerWithNoGbCollectorUrl
-			})
-			: null
+
+	//private readonly catalystClient: CatalystClient
+
+	//private readonly peerAPI: PeerAPI
+	private readonly peerUrl: string
+	private readonly provider: BrowserProvider
+
+	constructor(peerUrl: string, provider: BrowserProvider, peerWithNoGbCollectorUrl?: string, ) {
+
+		this.peerUrl = peerUrl
+
+		//this.catalystClient =
+
+		// this.catalystClientWithoutGbCollector = peerWithNoGbCollectorUrl
+		// 	? new CatalystClient({
+		// 		catalystUrl: peerWithNoGbCollectorUrl
+		// 	})
+		// 	: null
 		//this.peerAPI = new PeerAPI(peerUrl)
 		this.provider = provider
 	}
@@ -65,8 +75,9 @@ export class EntitiesOperator {
 
 		const eth = this.provider
 
-		const personal = eth.getSigner()
+		const personal = await eth.getSigner()
 		const signature = await personal.signMessage(entityId)
+
 
 		return Authenticator.createSimpleAuthChain(entityId, address, signature)
 	}
@@ -108,6 +119,11 @@ export class EntitiesOperator {
 	): Promise<any> {
 		console.log("hbkm "+hashesByKey)
 
+
+		const fetcher = createFetchComponent()
+		const catalystClient = await createCatalystClient({ url: this.peerUrl, fetcher })
+
+
 		const options: BuildEntityWithoutFilesOptions = {
 			type: entityType,
 			pointers: [pointer],
@@ -116,23 +132,36 @@ export class EntitiesOperator {
 			hashesByKey: hashesByKey
 		}
 
-		console.log(
-			JSON.stringify(options, null, 2))
+		console.log(JSON.stringify(options, null, 2))
 
-		const entityToDeploy = await this.catalystClient.buildEntityWithoutNewFiles(
-			options
-		)
+
+
+		const { files, entityId } = await DeploymentBuilder.buildEntity({
+			type: entityType,
+			pointers: [pointer],
+			files: new Map(),
+			metadata: entityMetadata
+		})
+
+
+
+		const contentClient = await catalystClient.getContentClient()
 
 		const authChain: AuthChain = await this.authenticateEntityDeployment(
-			address,
-			entityToDeploy.entityId
+			address.toLowerCase(),
+			entityId
 		)
-
-		const catalystClient =
-			this.catalystClientWithoutGbCollector ?? this.catalystClient
-
-		return catalystClient.deploy({
-			...entityToDeploy,
+		const entityToDeploy = contentClient.buildEntityFormDataForDeployment(
+			{authChain, entityId: entityId, files: files},
+		)
+		// //
+		// //
+		// //
+		// //
+		// //
+		return contentClient.deploy({
+			entityId,
+			files,
 			authChain
 		})
 	}

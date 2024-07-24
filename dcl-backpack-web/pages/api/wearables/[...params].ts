@@ -2,11 +2,17 @@ import {NextApiRequest, NextApiResponse} from "next";
 import {
     AvatarInfo,
     Item,
-    NFT,
+    NFT, Outfits,
     Wearable,
     WearableRepresentation,
 } from "@dcl/schemas";
 import {Avatar} from "@dcl/schemas/dist/platform/profile/avatar";
+import {
+    GetOutfitsResult
+} from "dcl-catalyst-client/dist/client/specs/lambdas-client";
+import {
+    CurrentlyWearingContextProps
+} from "../../../src/context/WearableContext";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const {params} = req.query
@@ -124,6 +130,33 @@ export async function fetchPlayerDataProfileWearables(userId: string | string[])
     }
 }
 
+export interface OutfitsResponse {
+    metadata?:Outfits
+}
+
+export async function fetchPlayerDataOutfits(userId: string | string[]) {
+    //const userData = await getUserData()
+    //const playerRealm = await getCurrentRealm()
+
+    let url = `https://peer.decentraland.org/lambdas/outfits/${userId}`.toString()
+
+    try {
+        let response = await fetch(url,
+            {
+                headers: {
+                    'Cache-Control': 'no-cache'
+                }
+            })
+        let json:OutfitsResponse = await response.json()
+
+        console.log("player outfits:", json.metadata?.outfits)
+        return json.metadata?.outfits
+    } catch {
+        console.log("an error occurred while reaching for player data")
+    }
+}
+
+
 interface LambdasWearableWithRarity extends LambdasWearable {
     rarity: string
 }
@@ -233,4 +266,40 @@ export const getMktLinkFromUrn = (wearable: string) => {
     const itemId = splitId[5]
 
     return `https://market.decentraland.org/contracts/${contract}/items/${itemId}`
+}
+
+interface cw {
+    urn: string;
+    item: Item | undefined
+}
+
+
+export const getAllNftDataForUrns = async (wearables: string[]) => {
+    const fetchWearableInfo: (urn: string) => Promise<cw> = async (urn: string) => {
+        return {urn, item: await getWearableInfo(urn)}
+    }
+
+    const allWearables: Promise<cw>[] =
+        wearables.map((urn) => {
+            return fetchWearableInfo(urn)
+        })
+
+    const allWearablesData = []
+
+    return Promise.all(allWearables).then((data) => {
+        console.log("all wearables data: ", data);
+           return new Map(
+                data.map(obj => {
+                    if (!obj || !obj.item || !obj.item.data.wearable)
+                        return ['not-found', {name: '', category: '', thumbnail: '', rarity: '', urn: ''}]
+                    return [obj.item.data.wearable.category.toString(),
+                        {
+                            category: obj.item.data.wearable.category,
+                            name: obj.item.name,
+                            thumbnail: obj.item.thumbnail,
+                            rarity: obj.item.rarity,
+                            urn: obj.urn
+                        }];
+                }));
+    })
 }

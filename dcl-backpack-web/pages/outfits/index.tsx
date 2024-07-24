@@ -1,12 +1,13 @@
 import type {NextPage} from 'next'
-import styles from '../styles/Home.module.css'
+import styles from '../../styles/Home.module.css'
 import React, {useEffect, useState} from "react";
 import {Grid} from "@mui/material";
-import {useWeb3Context} from "../src/context/Web3Context";
-import PreviewFrame from "../src/components/wearables/PreviewFrame";
-import {OutfitMap, useWearableContext} from "../src/context/WearableContext";
-import CurrentlyWearing from "../src/components/wearables/CurrentlyWearing";
-import OutfitList from "../src/components/wearables/OutfitList";
+import {useWeb3Context} from "../../src/context/Web3Context";
+import PreviewFrame from "../../src/components/wearables/PreviewFrame";
+import {OutfitMap, useWearableContext} from "../../src/context/WearableContext";
+import CurrentlyWearing from "../../src/components/wearables/CurrentlyWearing";
+import OutfitList from "../../src/components/wearables/OutfitList";
+import {fetchPlayerDataOutfits} from "../api/wearables/[...params]";
 
 const Outfits: NextPage = () => {
 
@@ -19,7 +20,7 @@ const Outfits: NextPage = () => {
     const [outfits, setOutfits] = useState<OutfitMap[]>([])
 
     const {address: avatarAddress} = useWeb3Context()
-    const {currentlyWearing, setCurrentlyWearing} = useWearableContext()
+    const {currentlyWearing, setCurrentlyWearing, lambdaOutfits} = useWearableContext()
 
     useEffect(() => {
         if (!avatarAddress) return
@@ -63,7 +64,23 @@ const Outfits: NextPage = () => {
             </Grid>
 
             <Grid item container  xs={7}>
+
+                <Grid container  xs={12}>
+                    <h2>In-World Outfits</h2>
+                </Grid>
+
+                <Grid container  xs={12}>
+
+                    <OutfitList outfitList={lambdaOutfits} setCurrentlyWearing={setCurrentlyWearing}/>
+                </Grid>
+                <Grid container  xs={12}>
+                    <h2>Saved Outfits</h2>
+                </Grid>
+
+                <Grid container  xs={12}>
                 <OutfitList outfitList={outfits} setCurrentlyWearing={setCurrentlyWearing}/>
+
+                </Grid>
             </Grid>
         </Grid>
     )

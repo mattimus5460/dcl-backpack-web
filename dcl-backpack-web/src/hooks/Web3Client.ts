@@ -28,9 +28,6 @@ if (typeof window !== 'undefined') {
     })
 }
 
-
-// Web3Modal code goes here
-
 type Web3Client = Web3ProviderState & {
     connect: () => Promise<void>
     disconnect: () => Promise<void>
@@ -44,8 +41,8 @@ export const useWeb3 = () => {
         if (web3Modal) {
             try {
                 const provider = await web3Modal.connect()
-                const web3Provider = new ethers.providers.Web3Provider(provider)
-                const signer = web3Provider.getSigner()
+                const web3Provider = new ethers.BrowserProvider(provider)
+                const signer = await web3Provider.getSigner()
                 const address = await signer.getAddress()
                 const network = await web3Provider.getNetwork()
                 dispatch({

@@ -27,6 +27,8 @@ function ClosetApp({Component, pageProps}: AppProps) {
 				<meta name="description"
 					  content="Decentraland Closet - Wearable Manager - made by mattimus"/>
 				<link rel="icon" href="/icon-48x48.png"/>
+				<link href="https://ui.decentraland.org/styles.css" rel="stylesheet" />
+				<link href="https://ui.decentraland.org/dark-theme.css" rel="stylesheet" />
 			</Head>
 			<Web3ContextProvider>
 				<WearableContextProvider>
@@ -36,6 +38,8 @@ function ClosetApp({Component, pageProps}: AppProps) {
 							<Grid container item xs={6} md={2}>
 								<Grid container xs={10}>
 									<Grid item xs={2}>
+
+
 										<img alt={"Decentraland Logo"}
 											 className={nav_styles.logo}
 											 width={"48px"}

@@ -23,7 +23,7 @@ const WearableCard: React.FC<WearableCardProps> = ({category, name, thumbnail, r
             {/*       src={item.definition.thumbnail}/><br/>*/}
 
 
-            <div hidden={true} className={`${wearablesStyles.cardCategory}}`}>
+            <div className={`${wearablesStyles.cardCategory}}`}>
              {getNameForCategory(category).toUpperCase()}
             </div>
 
