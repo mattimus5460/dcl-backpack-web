@@ -1,3 +1,4 @@
+'use client'
 import React, { createContext, useContext, ReactNode} from 'react'
 import { useWeb3 } from '../hooks/Web3Client'
 import { Web3ProviderState, web3InitialState } from '../reducers'

@@ -1,10 +1,10 @@
-import {ethers} from "ethers";
+import {BrowserProvider, ethers, Network} from "ethers";
 
 export type Web3ProviderState = {
     provider: any
-    web3Provider: ethers.providers.Web3Provider | null | undefined
+    web3Provider: BrowserProvider | null | undefined
     address: string | null | undefined
-    network: ethers.providers.Network | null | undefined
+    network: Network | null | undefined
     connect: (() => Promise<void>) | null
     disconnect: (() => Promise<void>) | null
 }

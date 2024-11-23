@@ -104,6 +104,14 @@
     background-image: radial-gradient(rgb(255, 230, 23), rgb(255, 182, 38));
 }
 
+.exotic:hover {
+    background-image: radial-gradient(rgb(228, 255, 184, var(--low-transparency)), rgb(202, 255, 115, var(--low-transparency)));
+}
+.exotic {
+    background-image: radial-gradient(rgb(228, 255, 184), rgb(202, 255, 115));
+}
+
+
 .common:hover {
     background-image: radial-gradient(rgb(212, 224, 224, var(--low-transparency)), rgb(171, 193, 193, var(--low-transparency)));
 }

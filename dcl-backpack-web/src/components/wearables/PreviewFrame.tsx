@@ -1,6 +1,7 @@
-import styles from "../../../styles/Home.module.css";
+'use client'
+import styles from "@/styles/Home.module.css";
 import React, {useEffect, useState} from "react";
-import {useWearableContext} from "../../context/WearableContext";
+import {useWearableContext} from "@/context/WearableContext";
 import {Color3} from "@dcl/schemas/dist/schemas";
 
 export interface PreviewFrameProps {

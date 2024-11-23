@@ -1,12 +1,13 @@
+'use client'
 import type {NextPage} from 'next'
 import styles from '../../styles/Home.module.css'
 import React, {useEffect, useState} from "react";
 import {Grid} from "@mui/material";
-import {useWeb3Context} from "../../src/context/Web3Context";
-import PreviewFrame from "../../src/components/wearables/PreviewFrame";
-import {OutfitMap, useWearableContext} from "../../src/context/WearableContext";
-import CurrentlyWearing from "../../src/components/wearables/CurrentlyWearing";
-import OutfitList from "../../src/components/wearables/OutfitList";
+import {useWeb3Context} from "@/context/Web3Context";
+import PreviewFrame from "@/components/wearables/PreviewFrame";
+import {OutfitMap, useWearableContext} from "@/context/WearableContext";
+import CurrentlyWearing from "@/components/wearables/CurrentlyWearing";
+import OutfitList from "@/components/wearables/OutfitList";
 import {fetchPlayerDataOutfits} from "../api/wearables/[...params]";
 
 const Outfits: NextPage = () => {

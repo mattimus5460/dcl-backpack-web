@@ -1,14 +1,15 @@
-import styles from "../../../styles/Home.module.css";
-import {useWearableContext} from "../../context/WearableContext";
+'use client'
+import styles from "@/styles/Home.module.css";
+import {useWearableContext} from "@/context/WearableContext";
 import React, {ReactNode, useEffect, useState} from "react";
-import wearablesStyles from "../../../styles/Wearables.module.css";
+import wearablesStyles from "@/styles/Wearables.module.css";
 import {Button, Grid} from "@mui/material";
 import {getCardForItem} from "./WearableCard";
-import {useWeb3Context} from "../../context/Web3Context";
+import {useWeb3Context} from "@/context/Web3Context";
 import {CloudUpload, Save} from "@mui/icons-material";
 import {Entity, EntityType} from "@dcl/schemas/dist/platform/entity";
 import {Profile} from "@dcl/schemas";
-import {EntitiesOperator, getHashesByKeyMap} from "../../utils/entities";
+import {EntitiesOperator, getHashesByKeyMap} from "@/utils/entities";
 
 export interface CurrentlyWearingProps {
 	cardSize: number;
@@ -72,7 +73,7 @@ const CurrentlyWearing: React.FC<CurrentlyWearingProps> = ({
 			return;
 		}
 
-		const URL = "https://peer-testing.decentraland.org"; //'https://peer-eu1.decentraland.org' //'https://peer-testing.decentraland.org' //'http://localhost:8000/api'
+		const URL = "https://peer-ec1.decentraland.org"; //'https://peer-eu1.decentraland.org' //'https://peer-testing.decentraland.org' //'http://localhost:8000/api'
 		const entitiesOperator = new EntitiesOperator(URL, web3Provider);
 
 		const hbkm = getHashesByKeyMap(profile.snapshots);
@@ -121,7 +122,7 @@ const CurrentlyWearing: React.FC<CurrentlyWearingProps> = ({
 	return <>
 		{showSave &&
           <Grid xs={12} textAlign={"center"}>
-            <Button onClick={saveCurrentlyWearing}
+            <Button onClick={() => saveCurrentlyWearing()}
                     className={`${styles.card} ${wearablesStyles["common"]}`}>
               <Save/>
             </Button>
@@ -130,7 +131,7 @@ const CurrentlyWearing: React.FC<CurrentlyWearingProps> = ({
 
 		{showUpdate &&
           <Grid xs={12} textAlign={"center"}>
-            <Button onClick={updateCurrentlyWearing}
+            <Button onClick={() => updateCurrentlyWearing()}
                     className={`${styles.card} ${wearablesStyles["epic"]}`}>
               <CloudUpload/>
             </Button>

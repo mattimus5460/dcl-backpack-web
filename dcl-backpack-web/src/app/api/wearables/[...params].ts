@@ -10,9 +10,6 @@ import {Avatar} from "@dcl/schemas/dist/platform/profile/avatar";
 import {
     GetOutfitsResult
 } from "dcl-catalyst-client/dist/client/specs/lambdas-client";
-import {
-    CurrentlyWearingContextProps
-} from "../../../src/context/WearableContext";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const {params} = req.query
@@ -43,7 +40,7 @@ export async function fetchPlayerDataProfileAvatar(userId: string | string[]) {
     //const userData = await getUserData()
     //const playerRealm = await getCurrentRealm()
 
-    let url = `https://peer.decentraland.org/lambdas/profile/${userId}`.toString()
+    let url = `https://peer.decentraland.org/lambdas/profiles/${userId}`.toString()
 
     try {
         let response = await fetch(url,
@@ -65,7 +62,7 @@ export async function fetchPlayerDataProfileAvatar2(userId: string | string[]) {
     //const userData = await getUserData()
     //const playerRealm = await getCurrentRealm()
 
-    let url = `https://peer.decentraland.org/lambdas/profile/${userId}`.toString()
+    let url = `https://peer.decentraland.org/lambdas/profiles/${userId}`.toString()
 
     try {
         let response = await fetch(url,
@@ -88,7 +85,7 @@ export async function fetchPlayerDataProfileSnapshot(userId: string | string[]) 
     //const userData = await getUserData()
     //const playerRealm = await getCurrentRealm()
 
-    let url = `https://peer.decentraland.org/lambdas/profile/${userId}`.toString()
+    let url = `https://peer.decentraland.org/lambdas/profiles/${userId}`.toString()
 
     try {
         let response = await fetch(url,
@@ -111,7 +108,7 @@ export async function fetchPlayerDataProfileWearables(userId: string | string[])
     //const userData = await getUserData()
     //const playerRealm = await getCurrentRealm()
 
-    let url = `https://peer.decentraland.org/lambdas/profile/${userId}`.toString()
+    let url = `https://peer.decentraland.org/lambdas/profiles/${userId}`.toString()
 
     try {
         let response = await fetch(url,

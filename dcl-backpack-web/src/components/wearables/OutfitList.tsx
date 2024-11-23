@@ -1,8 +1,9 @@
-import {OutfitMap} from "../../context/WearableContext";
+'use client'
+import {OutfitMap} from "@/context/WearableContext";
 import React from "react";
 import {getCardForItem} from "./WearableCard";
 import {Grid} from "@mui/material";
-import backpackStyles from "../../../styles/Backpack.module.css";
+import backpackStyles from "@/styles/Backpack.module.css";
 import RepeatIcon from "@mui/icons-material/Repeat";
 
 interface OutfitListProps {

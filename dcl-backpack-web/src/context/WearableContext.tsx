@@ -1,3 +1,4 @@
+'use client'
 import React, {
 	createContext,
 	PropsWithChildren,
@@ -9,7 +10,7 @@ import {
 	fetchPlayerDataOutfits,
 	fetchPlayerDataProfileAvatar2,
 	getAllNftDataForUrns,
-} from "../../pages/api/wearables/[...params]";
+} from "../app/api/wearables/[...params]";
 import {Item, WearableId} from "@dcl/schemas";
 import {useWeb3Context} from "./Web3Context";
 import {Avatar, Snapshots} from "@dcl/schemas/dist/schemas";
@@ -107,6 +108,8 @@ export const WearableContextProvider = ({children}: PropsWithChildren) => {
 				if (!currentWearablesUrns) {
 					return;
 				}
+
+				console.log("cwurns: " +currentWearablesUrns)
 
 				setCurrentlyWearingUrns(currentWearablesUrns);
 

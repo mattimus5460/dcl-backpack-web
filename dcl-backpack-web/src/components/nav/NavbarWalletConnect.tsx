@@ -1,7 +1,8 @@
+'use client'
 import {Avatar, Grid} from "@mui/material";
 import {Web3Button} from "./Web3Button";
-import styles from "../../../styles/Nav.module.css";
-import {useWearableContext} from "../../context/WearableContext";
+import styles from "@/styles/Nav.module.css";
+import {useWearableContext} from "@/context/WearableContext";
 
 function NavbarWalletConnect() {
     const {profile} = useWearableContext()

@@ -1,13 +1,14 @@
+"use client";
 import type {NextPage} from "next";
-import homeStyles from "../styles/Home.module.css";
-import wearablesStyles from "../styles/Wearables.module.css";
-import backpackStyles from "../styles/Backpack.module.css";
-import {useEffect, useState} from "react";
+import homeStyles from "@/styles/Home.module.css";
+import wearablesStyles from "@/styles/Wearables.module.css";
+import backpackStyles from "@/styles/Backpack.module.css";
+import {ReactNode, useEffect, useState} from "react";
 import {
 	fetchAllPlayerWearables,
 	getMktLinkFromUrn,
 	LambdaWearable,
-} from "./api/wearables/[...params]";
+} from "../api/wearables/[...params]";
 import {
 	Accordion,
 	AccordionDetails,
@@ -22,12 +23,12 @@ import {
 	TextField,
 	Typography,
 } from "@mui/material";
-import {useWeb3Context} from "../src/context/Web3Context";
-import PreviewFrame from "../src/components/wearables/PreviewFrame";
-import {useWearableContext} from "../src/context/WearableContext";
-import CurrentlyWearing from "../src/components/wearables/CurrentlyWearing";
-import {getNameForCategory} from "../src/utils/utils";
-import {useRouter} from "next/router";
+import {useWeb3Context} from "@/context/Web3Context";
+import PreviewFrame from "@/components/wearables/PreviewFrame";
+import {useWearableContext} from "@/context/WearableContext";
+import CurrentlyWearing from "@/components/wearables/CurrentlyWearing";
+import {getNameForCategory} from "@/utils/utils";
+import {useRouter} from "next/navigation";
 import {styled} from "@mui/system";
 import {Clear, ExpandMore, Search} from "@mui/icons-material";
 
@@ -81,13 +82,13 @@ const Backpack: NextPage = () => {
 		removeCategoryItem,
 	} = useWearableContext();
 
-	useEffect(() => {
-		if (router.query && router.query.backpackAddress) {
-			setBackpackAddress(router.query.backpackAddress as string);
-			const {pathname, query} = router;
-			router.replace({pathname}, undefined, {shallow: true});
-		}
-	}, [router]);
+	// useEffect(() => {
+	// 	if (router.query && router.query.backpackAddress) {
+	// 		setBackpackAddress(router.query.backpackAddress as string);
+	// 		const {pathname, query} = router;
+	// 		router.replace({pathname}, undefined, {shallow: true});
+	// 	}
+	// }, [router]);
 
 	useEffect(() => {
 		setLoading(true);
@@ -133,44 +134,26 @@ const Backpack: NextPage = () => {
 	}, [backpackAddress, avatarAddress]);
 
 
-	const rarityRanks = ["COMMON", "UNCOMMON", "RARE", "EPIC", "LEGENDARY", "MYTHIC", "UNIQUE"];
+	const rarityRanks = ["COMMON", "UNCOMMON", "RARE", "EPIC", "LEGENDARY", "EXOTIC", "MYTHIC", "UNIQUE"];
 
 
 	const processSortOrder = (item1: LambdaWearable, item2: LambdaWearable) => {
-		if (!item1.definition || !item2.definition) {
-			return 0;
-		}
+		if (!item1.definition || !item2.definition) return 0;
 
 		const item1Rarity = rarityRanks.indexOf(item1.definition.rarity.toUpperCase());
 		const item2Rarity = rarityRanks.indexOf(item2.definition.rarity.toUpperCase());
 
-		if (item1Rarity < item2Rarity) {
-			return 1;
-		} else if (item1Rarity == item2Rarity) {
-			return 0;
-		} else {
-			return -1;
-		}
+		return item1Rarity - item2Rarity;
 	};
 
 	const filterSectionItems = (item: LambdaWearable) => {
-		if (!item.definition) {
-			return false;
-		}
-
-		if (!filteredRarities || filteredRarities.size < 1) {
-			return true;
-		}
-
-		if (filteredRarities.has(item.definition.rarity.toUpperCase())) {
-			return true;
-		}
-
-		return false;
+		if (!item.definition) return false;
+		if (!filteredRarities || filteredRarities.size < 1) return true;
+		return filteredRarities.has(item.definition.rarity.toUpperCase());
 	};
 
 	const getSections = (wearableData: Map<string, LambdaWearable[]>) => {
-		const allCategories: JSX.Element[] = [];
+		const allCategories: ReactNode[] = [];
 		wearableData.forEach((items, category) => {
 
 			if (filteredCategories.size > 0 && !filteredCategories.has(category)) {
