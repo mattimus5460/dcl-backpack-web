@@ -1,6 +1,6 @@
 import React from "react";
-import {Grid} from "@mui/material";
-import {getNameForCategory} from "../../utils/utils";
+import {Grid2 as Grid} from "@mui/material";
+import {getNameForCategory} from "@/utils/utils";
 import styles from "@/styles/Home.module.css";
 import wearablesStyles from "@/styles/Wearables.module.css";
 import {CurrentlyWearingContextProps} from "@/context/WearableContext";
@@ -14,8 +14,9 @@ interface WearableCardProps {
 }
 
 const WearableCard: React.FC<WearableCardProps> = ({category, name, thumbnail, rarity, cardSize}) => {
+    console.log('WearableCard', category, name, thumbnail, rarity, cardSize)
     return (
-        <Grid xs={cardSize} textAlign={'center'} key={name}>
+        <Grid size={cardSize} textAlign={'center'} key={name}>
             {/*<Image alt={item.definition.name} loader={customLoader}*/}
             {/*    // width={showFullWearableInfo? '150': '100'}*/}
             {/*    // height={showFullWearableInfo? '150': '100'}*/}

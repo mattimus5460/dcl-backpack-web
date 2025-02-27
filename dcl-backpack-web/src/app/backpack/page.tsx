@@ -17,7 +17,7 @@ import {
 	Checkbox,
 	Chip,
 	FormControlLabel,
-	Grid,
+	Grid2 as Grid,
 	InputAdornment,
 	Stack,
 	TextField,
@@ -166,13 +166,13 @@ const Backpack: NextPage = () => {
 					background: "linear-gradient(-191deg, rgba(33,30,37,1) 0%, rgba(24,20,26,1) 100%);",
 				}}
 					  container>
-					<Grid xs={12} sm={.8}>
+					<Grid  size={{xs:12, sm:.8}} >
 						<h3>{getNameForCategory(category).toUpperCase()}</h3>
 						<p className={backpackStyles.categoryCounts}>{items.length}</p>
 
 						{getRemoveSectionItem(category)}
 					</Grid>
-					<Grid xs={12} sm={11} container>
+					<Grid size={{xs:12, sm:11}} container>
 						{items
 							.filter(filterSectionItems)
 							.sort(processSortOrder)
@@ -195,7 +195,7 @@ const Backpack: NextPage = () => {
 		}
 
 		return (
-			<Grid item xs={showFullWearableInfo ? 1.2 : .7}>
+			<Grid size={showFullWearableInfo ? 1.2 : .7}>
 				<a
 					onClick={() => {
 						removeSectionItem(category);
@@ -224,10 +224,12 @@ const Backpack: NextPage = () => {
 		}
 
 		return (
-			<Grid item
-				  xs={showFullWearableInfo ? 6 : 4}
-				  sm={showFullWearableInfo ? 4 : 2}
-				  lg={showFullWearableInfo ? 1 : .75}
+			<Grid
+				size={{
+						xs : (showFullWearableInfo ? 6 : 4),
+						sm : (showFullWearableInfo ? 4 : 2),
+						lg : (showFullWearableInfo ? 1 : .75)
+					}}
 			>
 				<a
 					onClick={() => {
@@ -282,14 +284,14 @@ const Backpack: NextPage = () => {
 	}
 
 	return (
-		<Grid container xs={12}>
+		<Grid container size={12}>
 
-			<Grid item xs={12} sm={2}
+			<Grid size={{xs:12, sm:2}}
 				  sx={{
 					  background: "radial-gradient(circle, rgba(33,30,37,1) 0%, rgba(24,20,26,1) 100%)",
 				  }}>
 
-				<Grid xs={12}>
+				<Grid size={12}>
 					<AccordionStyled disabled>
 						<AccordionSummary
 							expandIcon={<ExpandMore/>}
@@ -411,14 +413,14 @@ const Backpack: NextPage = () => {
 				</Grid>
 
 
-				<Grid item className={backpackStyles.sticky} xs={12}>
+				<Grid className={backpackStyles.sticky} size={12}>
 					<Stack>
 						<Box>
 							{avatarAddress &&
                               <PreviewFrame avatarAddress={avatarAddress}
                                             height={"500px"}/>}
 						</Box>
-						<Grid container xs={12}>
+						<Grid container size={12}>
 							<CurrentlyWearing cardSize={2}
 											  showSave={!backpackAddress || avatarAddress == backpackAddress}/>
 						</Grid>
@@ -426,7 +428,7 @@ const Backpack: NextPage = () => {
 				</Grid>
 			</Grid>
 
-			<Grid container item xs={12} sm={10}
+			<Grid container size={{xs:12, sm:10}}
 				  sx={{
 					  borderLeft: "1px solid #211e25",
 					  background: "radial-gradient(circle, rgba(33,30,37,1) 0%, rgba(24,20,26,1) 100%)",

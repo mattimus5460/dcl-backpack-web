@@ -1,22 +1,23 @@
 'use client'
 import type {NextPage} from "next";
-import {Grid} from "@mui/material";
+import {Grid2 as Grid} from "@mui/material";
 import {useWeb3Context} from "@/context/Web3Context";
 import PreviewFrame from "@/components/wearables/PreviewFrame";
 import CurrentlyWearing from "@/components/wearables/CurrentlyWearing";
+import React from "react";
 
 const Home: NextPage = () => {
 
 	const {address: avatarAddress} = useWeb3Context();
 
 	return (
-		<Grid container justifyContent={"center"} xs={12}>
-			<Grid xs={2}>
+		<Grid container justifyContent={"center"} size={12}>
+			<Grid size={2}>
 				{avatarAddress && <PreviewFrame avatarAddress={avatarAddress}
                                                 height={"800px"}/>}
 			</Grid>
 
-			<Grid justifyContent={"center"} container xs={4}>
+			<Grid container size={4} rowSpacing={0}  alignContent={"center"}>
 				<CurrentlyWearing cardSize={2}/>
 			</Grid>
 		</Grid>

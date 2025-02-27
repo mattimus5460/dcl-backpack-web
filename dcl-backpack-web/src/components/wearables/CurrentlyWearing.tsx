@@ -1,9 +1,9 @@
 'use client'
 import styles from "@/styles/Home.module.css";
-import {useWearableContext} from "@/context/WearableContext";
+import {CurrentlyWearingContextProps, useWearableContext} from "@/context/WearableContext";
 import React, {ReactNode, useEffect, useState} from "react";
 import wearablesStyles from "@/styles/Wearables.module.css";
-import {Button, Grid} from "@mui/material";
+import {Button, Grid2 as Grid} from "@mui/material";
 import {getCardForItem} from "./WearableCard";
 import {useWeb3Context} from "@/context/Web3Context";
 import {CloudUpload, Save} from "@mui/icons-material";
@@ -37,13 +37,9 @@ const CurrentlyWearing: React.FC<CurrentlyWearingProps> = ({
 	const [currentlyWearingItems, setCurrentlyWearingItems] = useState<ReactNode[]>([]);
 
 	useEffect(() => {
-		let cwiList: ReactNode[] = [];
-		currentlyWearingMap.forEach((value, category) => {
-			if (!value || category === "not-found") {
-				return;
-			}
-			cwiList.push(getCardForItem(category, value, cardSize));
-		});
+		const cwiList = Array.from(currentlyWearingMap.entries())
+			.filter(([category, value]) => value && category !== "not-found")
+			.map(([category, value]) => getCardForItem(category, value as CurrentlyWearingContextProps, cardSize));
 		setCurrentlyWearingItems(cwiList);
 	}, [currentlyWearingMap, cardSize]);
 
@@ -85,28 +81,17 @@ const CurrentlyWearing: React.FC<CurrentlyWearingProps> = ({
 		console.log("hbkm1 " + JSON.stringify(hbkm.keys()));
 
 		const metadata = {
-			avatars: [
-				{
-					name: profile.avatar.name,
-					description: profile.avatar.description,
-					tutorialStep: profile.avatar.tutorialStep,
-					ethAddress: profile.avatar.ethAddress,
-					version: profile.avatar.version,
-					avatar:
-
-						{
-							bodyShape: profile.avatar.avatar.bodyShape,
-							eyes: profile.avatar.avatar.eyes,
-							hair: profile.avatar.avatar.hair,
-							skin: profile.avatar.avatar.skin,
-							wearables: currentlyWearing.filter(w => w != ""),
-							snapshots: {
-								body: removeUrlFromSnapshot(profile.snapshots.body),
-								face256: removeUrlFromSnapshot(profile.snapshots.face256),
-							},
-							emotes: profile.avatar.avatar.emotes,
-						},
-				}],
+			avatars: [{
+				...profile.avatar,
+				avatar: {
+					...profile.avatar.avatar,
+					wearables: currentlyWearing.filter(w => w !== ""),
+					snapshots: {
+						body: profile.snapshots.body.split("/").pop(),
+						face256: profile.snapshots.face256.split("/").pop(),
+					},
+				},
+			}],
 		};
 
 		await entitiesOperator.deployEntityWithoutNewFiles(
@@ -121,7 +106,7 @@ const CurrentlyWearing: React.FC<CurrentlyWearingProps> = ({
 
 	return <>
 		{showSave &&
-          <Grid xs={12} textAlign={"center"}>
+          <Grid size={12} textAlign={"center"}>
             <Button onClick={() => saveCurrentlyWearing()}
                     className={`${styles.card} ${wearablesStyles["common"]}`}>
               <Save/>
@@ -130,7 +115,7 @@ const CurrentlyWearing: React.FC<CurrentlyWearingProps> = ({
 		}
 
 		{showUpdate &&
-          <Grid xs={12} textAlign={"center"}>
+          <Grid size={12} textAlign={"center"}>
             <Button onClick={() => updateCurrentlyWearing()}
                     className={`${styles.card} ${wearablesStyles["epic"]}`}>
               <CloudUpload/>

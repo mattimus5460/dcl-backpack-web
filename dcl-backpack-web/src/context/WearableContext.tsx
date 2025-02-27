@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import React, {
 	createContext,
 	PropsWithChildren,
@@ -109,7 +109,7 @@ export const WearableContextProvider = ({children}: PropsWithChildren) => {
 					return;
 				}
 
-				console.log("cwurns: " +currentWearablesUrns)
+				console.log("cwurns: " + currentWearablesUrns);
 
 				setCurrentlyWearingUrns(currentWearablesUrns);
 

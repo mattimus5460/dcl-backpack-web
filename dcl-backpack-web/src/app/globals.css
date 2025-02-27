@@ -1,0 +1,24 @@
+/*@import "tailwindcss";*/
+
+html,
+body {
+    padding: 0;
+    margin: 0;
+    font-family: system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    color: #fff;
+    background: radial-gradient(circle, rgba(33,30,37,1) 0%, rgba(24,20,26,1) 100%);
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+:root {
+    --low-transparency: .8;
+}
+

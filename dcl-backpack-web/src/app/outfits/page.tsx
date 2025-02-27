@@ -2,7 +2,7 @@
 import type {NextPage} from 'next'
 import styles from '../../styles/Home.module.css'
 import React, {useEffect, useState} from "react";
-import {Grid} from "@mui/material";
+import {Grid2 as Grid} from "@mui/material";
 import {useWeb3Context} from "@/context/Web3Context";
 import PreviewFrame from "@/components/wearables/PreviewFrame";
 import {OutfitMap, useWearableContext} from "@/context/WearableContext";
@@ -50,35 +50,35 @@ const Outfits: NextPage = () => {
     }, [avatarAddress])
 
     return (
-        <Grid alignItems={'center'} container xs={12}>
+        <Grid alignItems={'center'} container size={12}>
 
-            <Grid item xs={.25}>
+            <Grid size={.25}>
             </Grid>
-            <Grid item xs={3}>
+            <Grid size={3}>
                 {avatarAddress && <PreviewFrame avatarAddress={avatarAddress} height={'800px'}/>}
 
                 <div className={styles.grid}>
                     <CurrentlyWearing cardSize={2} showUpdate={true}/>
                 </div>
             </Grid>
-            <Grid item xs={1}>
+            <Grid size={1}>
             </Grid>
 
-            <Grid item container  xs={7}>
+            <Grid container  size={7}>
 
-                <Grid container  xs={12}>
+                <Grid container  size={12}>
                     <h2>In-World Outfits</h2>
                 </Grid>
 
-                <Grid container  xs={12}>
+                <Grid container  size={12}>
 
                     <OutfitList outfitList={lambdaOutfits} setCurrentlyWearing={setCurrentlyWearing}/>
                 </Grid>
-                <Grid container  xs={12}>
+                <Grid container  size={12}>
                     <h2>Saved Outfits</h2>
                 </Grid>
 
-                <Grid container  xs={12}>
+                <Grid container  size={12}>
                 <OutfitList outfitList={outfits} setCurrentlyWearing={setCurrentlyWearing}/>
 
                 </Grid>
