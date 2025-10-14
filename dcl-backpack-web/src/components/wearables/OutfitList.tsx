@@ -28,7 +28,6 @@ const OutfitList: React.FC<OutfitListProps> = ({
 		}
 		const outfitUrns = Object.values(outfit).map(v => v.urn);
 
-		console.log("OutfitList", outfit, outfitUrns);
 		return (<>
 				<Grid container className={`${backpackStyles.outfitRow}`}
 					  size={{xs: 12, sm: 6}}>

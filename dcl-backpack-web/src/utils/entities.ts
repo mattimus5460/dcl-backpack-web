@@ -22,13 +22,7 @@ export const getHashesByKeyMap = (snapshots: Snapshots) => {
 
 	const hashesByKey = new Map();
 	Object.entries(snapshots).forEach(([key, value]) => {
-		console.log(`${key}.png ${removeUrlFromSnapshot(value)}`);
 		hashesByKey.set(`${key}.png`, removeUrlFromSnapshot(value));
-	});
-
-	console.log("hhh2 " + JSON.stringify(hashesByKey));
-	Object.entries(hashesByKey).forEach(([key, value]) => {
-		console.log(`dd ${key}.png ${value}`);
 	});
 
 	return hashesByKey;

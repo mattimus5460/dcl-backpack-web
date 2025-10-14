@@ -78,7 +78,6 @@ const CurrentlyWearing: React.FC<CurrentlyWearingProps> = ({
 			const split = snap.split("/");
 			return split[split.length - 2];
 		};
-		console.log("hbkm1 " + JSON.stringify(hbkm.keys()));
 
 		const metadata = {
 			avatars: [{
