@@ -1,15 +1,19 @@
-'use client'
+"use client";
 import styles from "@/styles/Home.module.css";
 import React, {useEffect, useState} from "react";
 import {useWearableContext} from "@/context/WearableContext";
 import {Color3} from "@dcl/schemas/dist/schemas";
+import {colorToHex} from "@/utils/utils";
 
 export interface PreviewFrameProps {
-	avatarAddress: string;
 	height: string;
+	overrideProfile?: string[];
 }
 
-const PreviewFrame: React.FC<PreviewFrameProps> = ({height}) => {
+const PreviewFrame: React.FC<PreviewFrameProps> = ({
+	height,
+	overrideProfile,
+}) => {
 
 	const {currentlyWearing, profile} = useWearableContext();
 	const [hairColor, setHairColor] = useState("");
@@ -17,22 +21,8 @@ const PreviewFrame: React.FC<PreviewFrameProps> = ({height}) => {
 	const [bodyShape, setBodyShape] = useState("");
 
 	const explodeUrns = (urns: string[]) => {
-		return urns.filter(urn=>urn != '').join("&urn=");
+		return urns.filter(urn => urn != "").join("&urn=");
 	};
-
-	function componentToHex(c: number) {
-		let hex = c.toString(16);
-		return hex.length == 1 ? "0" + hex : hex;
-	}
-
-	function rgbToHex(r: number, g: number, b: number) {
-		return "%23" + componentToHex(r) + componentToHex(g) + componentToHex(b);
-	}
-
-	function colorToHex(color: Color3 | undefined) {
-		if (!color) return;
-		return rgbToHex(Math.floor(color.r * 255), Math.floor(color.g * 255), Math.floor(color.b * 255));
-	}
 
 	useEffect(() => {
 		let hairCol = colorToHex(profile.avatar?.avatar.hair.color);
@@ -49,7 +39,7 @@ const PreviewFrame: React.FC<PreviewFrameProps> = ({height}) => {
 	return (
 		<iframe id="previewIframe" className={styles.previewIframe}
 				width={"100%"} height={height}
-				src={`https://wearable-preview.decentraland.org/?disableBackground&urn=${explodeUrns(currentlyWearing)}&skin=${skinColor}&hair=${hairColor}&bodyShape=${bodyShape}`}/>
+				src={`https://wearable-preview.decentraland.org/?disableBackground&urn=${explodeUrns(overrideProfile ?? currentlyWearing)}&skin=${skinColor}&hair=${hairColor}&bodyShape=${bodyShape}`}/>
 	);
 };
 

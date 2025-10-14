@@ -162,6 +162,9 @@ export interface LambdaWearable {
     urn: string;
     amount: number;
     definition?: LambdasWearableWithRarity | undefined
+	individualData: {
+		id:string
+	}[]
 }
 
 export type LambdasWearable = Omit<Wearable, 'data'> & {
@@ -178,7 +181,8 @@ export async function fetchAllPlayerWearables(userId: string | string[]) {
     //const userData = await getUserData()
     //const playerRealm = await getCurrentRealm()
 
-    let url = `https://peer.decentraland.org/lambdas/collections/wearables-by-owner/${userId}?includeDefinitions`.toString()
+    //let url = `https://peer.decentraland.org/lambdas/collections/wearables-by-owner/${userId}?includeDefinitions`.toString()
+		let url = `https://peer.decentraland.org/lambdas/users/${userId}/wearables?includeDefinitions&pageSize=20000`.toString()
 
     try {
         let response = await fetch(url,
@@ -187,7 +191,7 @@ export async function fetchAllPlayerWearables(userId: string | string[]) {
                     'Cache-Control': 'no-cache'
                 }
             })
-        let json: LambdaWearable[] = await response.json()
+        let json: LambdaWearable[] = (await response.json()).elements
 
         console.log("player owns:", json)
         return json

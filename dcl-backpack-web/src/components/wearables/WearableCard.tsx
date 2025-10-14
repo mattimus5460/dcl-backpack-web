@@ -1,20 +1,21 @@
 import React from "react";
-import {Grid2 as Grid} from "@mui/material";
+import {Grid2 as Grid, GridBaseProps} from "@mui/material";
 import {getNameForCategory} from "@/utils/utils";
 import styles from "@/styles/Home.module.css";
 import wearablesStyles from "@/styles/Wearables.module.css";
 import {CurrentlyWearingContextProps} from "@/context/WearableContext";
+import {GridSize} from "@mui/material";
 
 interface WearableCardProps {
     category: string
     name?: string
     thumbnail: string
     rarity: string
-    cardSize: number
+    cardSize: GridBaseProps['size']
 }
 
 const WearableCard: React.FC<WearableCardProps> = ({category, name, thumbnail, rarity, cardSize}) => {
-    console.log('WearableCard', category, name, thumbnail, rarity, cardSize)
+    //console.log('WearableCard', category, name, thumbnail, rarity, cardSize)
     return (
         <Grid size={cardSize} textAlign={'center'} key={name}>
             {/*<Image alt={item.definition.name} loader={customLoader}*/}
@@ -36,7 +37,7 @@ const WearableCard: React.FC<WearableCardProps> = ({category, name, thumbnail, r
 }
 export default WearableCard
 
-export const getCardForItem = (category: string, item: CurrentlyWearingContextProps, cardSize: number) => {
+export const getCardForItem = (category: string, item: CurrentlyWearingContextProps, cardSize: GridBaseProps['size']) => {
     return (
         <WearableCard category={category}
                       name={item.name} thumbnail={item.thumbnail} rarity={item.rarity}

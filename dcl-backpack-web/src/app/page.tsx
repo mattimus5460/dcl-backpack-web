@@ -13,8 +13,7 @@ const Home: NextPage = () => {
 	return (
 		<Grid container justifyContent={"center"} size={12}>
 			<Grid size={2}>
-				{avatarAddress && <PreviewFrame avatarAddress={avatarAddress}
-                                                height={"800px"}/>}
+				{avatarAddress && <PreviewFrame height={"800px"}/>}
 			</Grid>
 
 			<Grid container size={4} rowSpacing={0}  alignContent={"center"}>

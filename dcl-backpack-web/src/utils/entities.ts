@@ -1,64 +1,64 @@
-import {BrowserProvider, ethers} from "ethers";
-import { Authenticator, AuthChain  } from '@dcl/crypto'
-import { Entity, EntityType } from '@dcl/schemas/dist/platform/entity'
+import {BrowserProvider} from "ethers";
+import {AuthChain, Authenticator} from "@dcl/crypto";
+import {Entity, EntityType} from "@dcl/schemas/dist/platform/entity";
 //import { CatalystClient } from 'dcl-catalyst-client/dist/CatalystClient'
 //import { BuildEntityWithoutFilesOptions } from 'dcl-catalyst-client/dist/ContentClient'
-
 //import { PeerAPI } from './peer'
-import {Avatar, Profile} from "@dcl/schemas";
+import {ContentMapping, Profile} from "@dcl/schemas";
 import {Snapshots} from "@dcl/schemas/dist/platform/profile/avatar";
 import {createFetchComponent} from "@well-known-components/fetch-component";
-import {createCatalystClient, DeploymentBuilder} from "dcl-catalyst-client";
+import {createCatalystClient} from "dcl-catalyst-client";
 import {
-	BuildEntityWithoutFilesOptions
-} from "dcl-catalyst-client/dist/client/types";
+	buildEntity,
+	buildEntityAndFile,
+	DeploymentPreparationData,
+} from "dcl-catalyst-client/dist/client";
+import {IFetchComponent} from "@well-known-components/interfaces";
+import {hashV1} from "@dcl/hashing";
 
 export const getHashesByKeyMap = (snapshots: Snapshots) => {
 
-	console.log("hhh "+JSON.stringify(snapshots))
+	console.log("hhh " + JSON.stringify(snapshots));
 
-	const hashesByKey = new Map()
+	const hashesByKey = new Map();
 	Object.entries(snapshots).forEach(([key, value]) => {
-		console.log(`${key}.png ${ removeUrlFromSnapshot(value)}`)
-		hashesByKey.set(`${key}.png`, removeUrlFromSnapshot(value))
-	})
+		console.log(`${key}.png ${removeUrlFromSnapshot(value)}`);
+		hashesByKey.set(`${key}.png`, removeUrlFromSnapshot(value));
+	});
 
-	console.log("hhh2 "+JSON.stringify(hashesByKey))
+	console.log("hhh2 " + JSON.stringify(hashesByKey));
 	Object.entries(hashesByKey).forEach(([key, value]) => {
-		console.log(`dd ${key}.png ${value}`)
-	})
+		console.log(`dd ${key}.png ${value}`);
+	});
 
-	return hashesByKey
-}
+	return hashesByKey;
+};
 
-const removeUrlFromSnapshot = (snap:string) =>{
-	const split = snap.split("/")
-	return split[split.length -1]
-}
+const removeUrlFromSnapshot = (snap: string) => {
+	const split = snap.split("/");
+	return split[split.length - 2];
+};
 
 
 export class EntitiesOperator {
 
-
 	//private readonly catalystClient: CatalystClient
-
 	//private readonly peerAPI: PeerAPI
-	private readonly peerUrl: string
-	private readonly provider: BrowserProvider
+	private readonly peerUrl: string;
+	private readonly provider: BrowserProvider;
 
-	constructor(peerUrl: string, provider: BrowserProvider, peerWithNoGbCollectorUrl?: string, ) {
+	constructor(peerUrl: string, provider: BrowserProvider, peerWithNoGbCollectorUrl?: string) {
 
-		this.peerUrl = peerUrl
+		this.peerUrl = peerUrl;
 
 		//this.catalystClient =
-
 		// this.catalystClientWithoutGbCollector = peerWithNoGbCollectorUrl
 		// 	? new CatalystClient({
 		// 		catalystUrl: peerWithNoGbCollectorUrl
 		// 	})
 		// 	: null
 		//this.peerAPI = new PeerAPI(peerUrl)
-		this.provider = provider
+		this.provider = provider;
 	}
 
 	/**
@@ -70,99 +70,204 @@ export class EntitiesOperator {
 	 */
 	private async authenticateEntityDeployment(
 		address: string,
-		entityId: string
+		entityId: string,
 	): Promise<AuthChain> {
-
-		const eth = this.provider
-
-		const personal = await eth.getSigner()
-		const signature = await personal.signMessage(entityId)
-
-
-		return Authenticator.createSimpleAuthChain(entityId, address, signature)
+		const eth = this.provider;
+		const personal = await eth.getSigner();
+		const signature = await personal.signMessage(entityId);
+		return Authenticator.createSimpleAuthChain(entityId, address, signature);
 	}
 
 	/**
-	 * Gets the first {@link ProfileEntity} out of multiple possible profile entities or
-	 * returns the last one in case the given address has no profile entities.
+	 * Deploys an entity without uploading new files by leveraging existing content on a Catalyst server.
 	 *
-	 * @param address - The address that owns the profile entity being retrieved.
-	 */
-	// async getProfileEntity(address: string): Promise<ProfileEntity> {
-	// 	const entities: Entity[] = await this.catalystClient.fetchEntitiesByPointers(
-	// 		[address.toLowerCase()]
-	// 	)
-	//
-	// 	if (entities.length > 0) {
-	// 		return entities[0] as ProfileEntity
-	// 	}
-	//
-	// 	return this.peerAPI.getDefaultProfileEntity()
-	// }
-
-	/**
-	 * Deploys an entity of a determined type.
-	 * This method will build everything related to the deployment of
-	 * the entity and will prompt the user for their signature before
-	 * doing a deployment.
-	 *
-	 * @param entity - The title of the book.
-	 * @param entityType - The type of the entity.
-	 * @param address - The owner / soon to be owner of the entity.
-	 */
+	 * @param entityMetadata The metadata of the entity to be deployed.
+	 * @param hashesByKey A map that associates keys with the corresponding content hashes for the entity.
+	 * @param entityType The type of the entity being deployed.
+	 * @param pointer The identifier or pointer for the entity.
+	 * @param address The address of the user deploying the entity*/
 	async deployEntityWithoutNewFiles(
-		entityMetadata: Entity['metadata'],
+		entityMetadata: Entity["metadata"],
 		hashesByKey: Map<string, string>,
 		entityType: EntityType,
 		pointer: string,
-		address: string
+		address: string,
 	): Promise<any> {
-		console.log("hbkm "+hashesByKey)
 
+		const fetcher = createFetchComponent();
+		const catalystClient = createCatalystClient({
+			url: this.peerUrl,
+			fetcher,
+		});
+		const entityFiles = new Map<string, Uint8Array>();
+		entityFiles.set("body.png", new Uint8Array([]));
+		entityFiles.set("face256.png", new Uint8Array([]));
 
-		const fetcher = createFetchComponent()
-		const catalystClient = await createCatalystClient({ url: this.peerUrl, fetcher })
-
-
-		const options: BuildEntityWithoutFilesOptions = {
+		const {files, entityId} = await buildEntityWithoutNewFiles(fetcher, {
+			contentUrl: this.peerUrl,
 			type: entityType,
 			pointers: [pointer],
 			metadata: entityMetadata,
+			hashesByKey: hashesByKey,
 			timestamp: Date.now(),
-			hashesByKey: hashesByKey
-		}
+		});
 
-		console.log(JSON.stringify(options, null, 2))
-
-
-
-		const { files, entityId } = await DeploymentBuilder.buildEntity({
-			type: entityType,
-			pointers: [pointer],
-			files: new Map(),
-			metadata: entityMetadata
-		})
-
-
-
-		const contentClient = await catalystClient.getContentClient()
+		const contentClient = await catalystClient.getContentClient();
 
 		const authChain: AuthChain = await this.authenticateEntityDeployment(
 			address.toLowerCase(),
-			entityId
-		)
-		const entityToDeploy = contentClient.buildEntityFormDataForDeployment(
-			{authChain, entityId: entityId, files: files},
-		)
-		// //
-		// //
-		// //
-		// //
-		// //
-		return contentClient.deploy({
 			entityId,
+		);
+
+		return (await contentClient.deploy({
 			files,
-			authChain
-		})
+			entityId,
+			authChain,
+		})) as any;
 	}
+}
+
+
+export async function buildEntityWithoutNewFiles(
+	fetcher: IFetchComponent,
+	{
+		contentUrl,
+		type,
+		pointers,
+		hashesByKey,
+		metadata,
+		timestamp,
+	}: {
+		contentUrl: string
+		type: EntityType
+		pointers: string[]
+		hashesByKey?: Map<string, string>
+		metadata?: any
+		timestamp?: number
+	},
+): Promise<DeploymentPreparationData> {
+	const givenFilesMaps: Map<string, string> | undefined = hashesByKey ?? metadata ? getHashesByKey(metadata) : undefined;
+	// When the old entity has the old hashing algorithm, then the full entity with new hash will need to be deployed.
+	if (!!givenFilesMaps && isObsoleteProfile(type, givenFilesMaps)) {
+		const files = await downloadAllFiles(fetcher, contentUrl, givenFilesMaps);
+		const metadataWithNewHash = await updateMetadata(files, metadata);
+		return buildEntity({
+			type,
+			pointers,
+			files,
+			metadata: metadataWithNewHash,
+			timestamp,
+		});
+	}
+	return buildEntityInternal(type, pointers, {
+		hashesByKey,
+		metadata,
+		timestamp,
+	});
+}
+
+async function updateMetadata(files: Map<string, Uint8Array>, metadata?: any) {
+	if (!metadata) return metadata;
+
+	metadata.avatars = await Promise.all(
+		(metadata as Profile).avatars.map(async (avatar) => {
+			const newSnapshots = {face256: "", body: ""};
+
+			const face256Content = files.get("face256.png");
+			if (!!face256Content) {
+				newSnapshots["face256"] = await hashV1(face256Content);
+			}
+			const bodyContent = files.get("body.png");
+			if (!!bodyContent) {
+				newSnapshots["body"] = await hashV1(bodyContent);
+			}
+			avatar.avatar.snapshots = newSnapshots;
+			return avatar;
+		}),
+	);
+
+	return metadata;
+}
+
+function getHashesByKey(metadata: any): Map<string, string> {
+	const avatar = (metadata as Profile).avatars[0];
+	return new Map([
+		["body.png", avatar.avatar.snapshots.body],
+		["face256.png", avatar.avatar.snapshots.face256],
+	]);
+}
+
+function isObsoleteProfile(type: EntityType, hashesByKey: Map<string, string>): boolean {
+	return type === EntityType.PROFILE && Array.from(hashesByKey).some(([, hash]) => hash.toLowerCase().startsWith("qm"));
+}
+
+async function buildEntityInternal(
+	type: EntityType,
+	pointers: string[],
+	options?: BuildEntityInternalOptions,
+): Promise<DeploymentPreparationData> {
+	// Make sure that there is at least one pointer
+	if (pointers.length === 0) {
+		throw new Error(`All entities must have at least one pointer.`);
+	}
+
+	// Re-organize the hashes
+	const hashesByKey: Map<string, string> = options?.hashesByKey ? options?.hashesByKey : new Map();
+	const entityContent: ContentMapping[] = Array.from(hashesByKey.entries()).map(([key, hash]) => ({
+		file: key,
+		hash,
+	}));
+
+	// Calculate timestamp if necessary
+	const timestamp: number = options?.timestamp ? options?.timestamp : Date.now();
+
+	// Build entity file
+	const {entity, entityFile} = await buildEntityAndFile({
+		type,
+		pointers,
+		timestamp,
+		content: entityContent,
+		metadata: options?.metadata,
+	});
+
+	// Add entity file to content files
+	const filesByHash: Map<string, Uint8Array> = options?.filesByHash ? options.filesByHash : new Map();
+	filesByHash.set(entity.id, entityFile);
+
+	return {files: filesByHash, entityId: entity.id};
+}
+
+type BuildEntityInternalOptions = {
+	hashesByKey?: Map<string, string>
+	filesByHash?: Map<string, Uint8Array>
+	metadata?: any
+	timestamp?: number
+}
+
+async function downloadAllFiles(
+	fetcher: IFetchComponent,
+	contentUrl: string,
+	hashes: Map<string, string>,
+): Promise<Map<string, Uint8Array>> {
+	const oldBodyHash = hashes.get("body.png");
+	const oldFaceHash = hashes.get("face256.png");
+
+	const bodyUrl = new URL(`${contentUrl}/contents/${oldBodyHash}`).toString();
+	const faceUrl = new URL(`${contentUrl}/contents/${oldFaceHash}`).toString();
+
+	const [bodyFileContent, faceFileContent] = await Promise.all([
+		fetchArrayBuffer(fetcher, bodyUrl),
+		fetchArrayBuffer(fetcher, faceUrl),
+	]);
+
+	return new Map([
+		["body.png", bodyFileContent],
+		["face256.png", faceFileContent],
+	]);
+}
+
+async function fetchArrayBuffer(fetcher: IFetchComponent, url: string) {
+	const response = await fetcher.fetch(url);
+	const buffer = await response.arrayBuffer();
+	return new Uint8Array(buffer);
 }

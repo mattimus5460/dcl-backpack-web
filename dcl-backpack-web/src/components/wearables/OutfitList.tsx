@@ -1,10 +1,11 @@
-'use client'
+"use client";
 import {OutfitMap} from "@/context/WearableContext";
 import React from "react";
 import {getCardForItem} from "./WearableCard";
-import {Grid} from "@mui/material";
+import {Grid2 as Grid} from "@mui/material";
 import backpackStyles from "@/styles/Backpack.module.css";
 import RepeatIcon from "@mui/icons-material/Repeat";
+import PreviewFrame from "@/components/wearables/PreviewFrame";
 
 interface OutfitListProps {
 	outfitList: OutfitMap[],
@@ -23,22 +24,16 @@ const OutfitList: React.FC<OutfitListProps> = ({
 				continue;
 			}
 
-			allCards.push(getCardForItem(key, value, .75));
+			allCards.push(getCardForItem(key, value, {xs: 3}));
 		}
+		const outfitUrns = Object.values(outfit).map(v => v.urn);
+
+		console.log("OutfitList", outfit, outfitUrns);
 		return (<>
 				<Grid container className={`${backpackStyles.outfitRow}`}
-					  xs={12}>
-					{/*<Grid xs={1} onClick={() => {*/}
-					{/*    setCurrentlyWearing(new Map(Object.entries(outfit)))*/}
-					{/*}}>*/}
-					{/*    Set Outfit*/}
-					{/*    <div className={`${styles.card} ${wearablesStyles["common"]}`}>*/}
+					  size={{xs: 12, sm: 6}}>
 
-					{/*    </div>*/}
-					{/*</Grid>*/}
-
-
-					<Grid container xs={.75}>
+					<Grid container size={{xs: 1}}>
 						<a
 							onClick={() => {
 								setCurrentlyWearing(new Map(Object.entries(outfit)));
@@ -46,12 +41,17 @@ const OutfitList: React.FC<OutfitListProps> = ({
 							className={`${backpackStyles.setOutfitButton}`}>
 							Change Outfit<br/>
 							<RepeatIcon/>
-							{/*<img alt={item.definition.name} width={'100%'} src={item.definition.thumbnail}/>*/}
-
 						</a>
 					</Grid>
 
-					{allCards}
+					{/* <Grid container size={{xs: 3}}> */}
+					{/* 	<PreviewFrame height={"100%"}  overrideProfile={outfitUrns}/> */}
+					{/* </Grid> */}
+
+					<Grid container alignItems={"top"} alignContent={"start"}
+						  size={{xs: 8}}>
+						{allCards}
+					</Grid>
 				</Grid>
 
 			</>
@@ -64,4 +64,4 @@ const OutfitList: React.FC<OutfitListProps> = ({
 	</>;
 };
 
-export default OutfitList
+export default OutfitList;

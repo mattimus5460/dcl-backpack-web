@@ -69,14 +69,14 @@ const CurrentlyWearing: React.FC<CurrentlyWearingProps> = ({
 			return;
 		}
 
-		const URL = "https://peer-ec1.decentraland.org"; //'https://peer-eu1.decentraland.org' //'https://peer-testing.decentraland.org' //'http://localhost:8000/api'
+		const URL = "https://peer.decentraland.org" //https://peer-ec1.decentraland.org"; //'https://peer-eu1.decentraland.org' //'https://peer-testing.decentraland.org' //'http://localhost:8000/api'
 		const entitiesOperator = new EntitiesOperator(URL, web3Provider);
 
 		const hbkm = getHashesByKeyMap(profile.snapshots);
 
 		const removeUrlFromSnapshot = (snap: string) => {
 			const split = snap.split("/");
-			return split[split.length - 1];
+			return split[split.length - 2];
 		};
 		console.log("hbkm1 " + JSON.stringify(hbkm.keys()));
 
@@ -87,14 +87,14 @@ const CurrentlyWearing: React.FC<CurrentlyWearingProps> = ({
 					...profile.avatar.avatar,
 					wearables: currentlyWearing.filter(w => w !== ""),
 					snapshots: {
-						body: profile.snapshots.body.split("/").pop(),
-						face256: profile.snapshots.face256.split("/").pop(),
+						body: removeUrlFromSnapshot(profile.snapshots.body),
+						face256: removeUrlFromSnapshot(profile.snapshots.face256),
 					},
 				},
 			}],
 		};
 
-		await entitiesOperator.deployEntityWithoutNewFiles(
+		const res = await entitiesOperator.deployEntityWithoutNewFiles(
 			metadata,
 			hbkm,
 			EntityType.PROFILE,

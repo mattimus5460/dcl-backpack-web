@@ -267,7 +267,9 @@ const Backpack: NextPage = () => {
 		//const iframe = document.getElementById("previewIframe") as HTMLIFrameElement;
 		//setCurrentlyWearing([...currentlyWearing, item.urn])
 
-		updateCurrentlyWearing(item.definition?.data.category, item.urn, item.definition?.name, item.definition?.thumbnail, item.definition?.rarity);
+		console.log("adding "+ item.individualData[0].id)
+
+		updateCurrentlyWearing(item.definition?.data.category, item.individualData[0].id, item.definition?.name, item.definition?.thumbnail, item.definition?.rarity);
 
 		// if (iframe && iframe.contentWindow) {
 		//     sendMessage(iframe.contentWindow, PreviewMessageType.UPDATE, {
@@ -397,8 +399,6 @@ const Backpack: NextPage = () => {
 
 
 							<div className={backpackStyles.description}>
-
-
 								<FormControlLabel
 									control={<Checkbox
 										id={"showFullWearableInfoCheckbox"}
@@ -417,11 +417,10 @@ const Backpack: NextPage = () => {
 					<Stack>
 						<Box>
 							{avatarAddress &&
-                              <PreviewFrame avatarAddress={avatarAddress}
-                                            height={"500px"}/>}
+                              <PreviewFrame height={"500px"}/>}
 						</Box>
 						<Grid container size={12}>
-							<CurrentlyWearing cardSize={2}
+							<CurrentlyWearing cardSize={4}
 											  showSave={!backpackAddress || avatarAddress == backpackAddress}/>
 						</Grid>
 					</Stack>
